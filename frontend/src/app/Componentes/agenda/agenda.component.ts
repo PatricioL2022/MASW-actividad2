@@ -57,24 +57,32 @@ export class AgendaComponent implements OnInit{
     
   }
 
-  accion(){
-   
-    //console.log(this.dates);
-    this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Message Content' });
-    /**this.dates!.forEach(element => {
+  guardarAgenda(){
+   if(this.selectedHorario && this.dates!.length > 0)
+   {
+     this.dates!.forEach(element => {
       var datePipe = new DatePipe('en-US');
       var fecha = datePipe.transform(element, 'yyyy/MM/dd');
       this.api.PostAgenda({ "Fecha":fecha,
       "horarioatenciondetalle_id": parseInt(this.selectedHorario) }).subscribe((result: any) => {
-       
-       console.log(result);
+        if(result)
+        {
+          if(result.exito==201)
+          {
+            this.messageService.add({ severity: 'success', summary: 'Aviso', detail: 'Agregado correctamente' });
+          }
+          else {
+            this.messageService.add({ severity: 'error', summary: 'Aviso', detail: 'Error al guardar la agenda' });
+          }
+        }
         });
-      console.log(fecha)
-    });*/
-   
+    });
+   }
+   else {
+    this.messageService.add({ severity: 'warn', summary: 'Aviso', detail: 'Ingrese todos los datos requeridos' });
+   }
   }
   ListarElementos(medico_id: number) {
-    console.log("medico: "+medico_id)
     this.horarios = [];
     this.api.GetHorarioAtencionDetallePorMedico(medico_id).subscribe((result: any) => {
       if(result)
@@ -89,8 +97,6 @@ export class AgendaComponent implements OnInit{
           );
         });
       }
-     console.log(result);
       });
-
   }
 }
