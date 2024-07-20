@@ -10,3 +10,16 @@
     color: var(--color-secundario);
     border-color: var(--color-primario);
 }
+.Centrar{   
+    text-align: center;
+    margin: 0 auto;
+}
+.card-header{
+    background-color: var(--color-formulario-primario);
+}
+.card-body{
+    background-color: var(--color-formulario-secundario);
+}
+.card-footer{
+    background-color: var(--color-formulario-terciario);
+}

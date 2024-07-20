@@ -15,20 +15,20 @@ export class TipoDeTexto {
   ///////////////////////////////////////// VALIDAR CAMPOS DE ACUERDO AL TIPO  //////////////////////////////////////////////////////////
   V_ValidadorGeneral(tipo: string, valor: any): boolean {
     switch (tipo) {
-      case 'numerico':
+      case 'number':
         return this.V_SoloNumeros(valor);
         break;
-      case 'alfanumerico':
+      case 'text':
         return this.V_AlfaNumerico(valor);
         break;
-        case 'alfanumericoNoNull':
+        case 'textNoNull':
         return this.V_AlfaNumericoNoNulo(valor);
         break;
-      case 'correo':
+      case 'email':
         return this.V_Correo(valor);
         break;
       default:
-        return false;
+        return true;
     }
   }
 
@@ -49,10 +49,10 @@ export class TipoDeTexto {
     return true;
   }
   V_AlfaNumerico(parametro: string) {
-    var parm = parametro.trim()
+    // var parm = parametro.trim()
     let resultado = false;
-    for (let i = 0; i < parm.length; i++) {
-      let caracterActual = parm[i];
+    for (let i = 0; i < parametro.length; i++) {
+      let caracterActual = parametro[i];
       if (!caracterActual.match(/^[0-9a-zñA-ZÑ\s]*$/)) {
         return false;
       }
@@ -268,8 +268,8 @@ export class TipoDeTexto {
     };
   }
   ///////////////////////////////////////// VALIDAR LONGITUD MAX Y MIN //////////////////////////////////////////////////////////
-  V_LongitudMinMax(numero: string, min: number, max: number) {
-    return numero.length >= min && numero.length <= max;
+  V_LongitudMinMax(texto: string, min: number, max: number) {
+    return texto.length >= min && texto.length <= max;
   }
   validarLongitudMinMax(min: number, max: number): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
@@ -286,237 +286,4 @@ export class TipoDeTexto {
     };
   }
 
-  ///////////////////////////////////////// VALIDAR MAYOR Q' Y MENOR Q' //////////////////////////////////////////////////////////
-
-  V_MayorQue(valor1: string, valor2: string): boolean {
-    const num1 = parseFloat(valor1);
-    const num2 = parseFloat(valor2);
-
-    if (isNaN(num1) || isNaN(num2)) {
-      throw new Error('Ambos valores deben ser números válidos.');
-    }
-
-    return num1 <= num2;
-  }
-
-  VFN_MayorQue(control1: string, control2: string): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      if (!control.parent) return null; // Si el control no tiene padre, salir
-
-      const formGroup = control.parent as FormGroup;
-
-      const valor1 = formGroup.controls[control1];
-      const compararControl = formGroup.controls[control2];
-
-      if (!valor1 || !compararControl) return null; // Si el control de comparación no existe, salir
-
-      const valor = valor1.value;
-      const comparar = compararControl.value;
-      if (valor == '' || comparar == '') return null;
-
-      if (!this.V_MayorQue(valor, comparar)) {
-        return { mayorQue: true };
-      }
-
-      return null;
-    };
-  }
-
-  // VFN_MenorQue(control1: string, control2: string): ValidatorFn {
-  //   return (control: AbstractControl): ValidationErrors | null => {
-  //     if (!control.parent) return null; // Si el control no tiene padre, salir
-
-  //     const formGroup = control.parent as FormGroup;
-  //     const valor1 = formGroup.controls[control1];
-  //     const compararControl = formGroup.controls[control2];
-
-  //     if (!valor1 || !compararControl) return null; // Si el control de comparación no existe, salir
-
-  //     const valor = valor1.value;
-  //     const comparar = compararControl.value;
-
-  //     if (this.V_MayorQue(valor, comparar)) {
-  //       return { menorQue: true };
-  //     }
-
-  //     return null;
-  //   };
-  // }
-
-  //  VFN_MayorQue(ctl_menor: string, ctl_maximo: string): ValidatorFn {
-  //   return (formGroup: AbstractControl): ValidationErrors | null => {
-  //     const group = formGroup as FormGroup;
-  //     const menor = group.controls[ctl_menor];
-  //     const mayor = group.controls[ctl_maximo];
-
-  //     if (!menor || !mayor) {
-  //       return null; // No se puede validar si los controles no existen
-  //     }
-
-  //     const valor1 = menor.value;
-  //     const valor2 = mayor.value;
-
-  //     try {
-  //       if (!this.V_MayorQue(valor1, valor2)) {
-  //         menor.setErrors({ mayorQue: true });
-  //         return { mayorQue: true };
-  //       } else {
-  //         menor.setErrors(null);
-  //       }
-  //     } catch (error) {
-  //       menor.setErrors({ invalidNumber: error });
-  //       return { invalidNumber: error };
-  //     }
-
-  //     return null;
-  //   };
-  // }
-  //  VFN_MenorQue(ctl_menor: string, ctl_maximo: string): ValidatorFn {
-  //   return (formGroup: AbstractControl): ValidationErrors | null => {
-  //     const group = formGroup as FormGroup;
-  //     const menor = group.controls[ctl_menor];
-  //     const mayor = group.controls[ctl_maximo];
-
-  //     if (!menor || !mayor) {
-  //       return null; // No se puede validar si los controles no existen
-  //     }
-
-  //     const valor1 = menor.value;
-  //     const valor2 = mayor.value;
-
-  //     try {
-  //       if (!this.V_MenorQue(valor1, valor2)) {
-  //         menor.setErrors({ mayorQue: true });
-  //         return { mayorQue: true };
-  //       } else {
-  //         menor.setErrors(null);
-  //       }
-  //     } catch (error) {
-  //       menor.setErrors({ invalidNumber: error });
-  //       return { invalidNumber: error };
-  //     }
-
-  //     return null;
-  //   };
-  // }
-
-  /////////////////////////////////////// VALIDAR NUMERO DE DIGITOS POR TIPO DE IDENTIFICACION   //////////////////////////////////////////////////////////
-
-  Tipo_Identificacion(Valor: string, tipo: string) {
-    if (tipo === '1') {
-      return Valor.length === 10 && this.V_SoloNumeros(Valor);
-    }
-    if (tipo === '2') {
-      return Valor.length === 13 && this.V_SoloNumeros(Valor);
-    }
-    if (tipo === '3') {
-      return (
-        Valor.length >= 6 && Valor.length <= 9 && this.V_AlfaNumerico(Valor)
-      );
-    }
-    return false;
-  }
-
-  ValidatorTipo_Identificacion(
-    identificacion: string,
-    tipo_identificacion: string
-  ): ValidatorFn {
-    return (formGroup: AbstractControl): ValidationErrors | null => {
-      const ide = formGroup.get(identificacion)?.value;
-      const tipo_ide = formGroup.get(tipo_identificacion)?.value;
-      if (tipo_ide != null && tipo_ide != '') {
-        if (
-          ide === '' ||
-          ide === null ||
-          this.Tipo_Identificacion(ide, tipo_ide)
-        ) {
-          return null;
-        } else {
-          return { Requerido: true };
-        }
-      } else {
-        return null;
-      }
-    };
-  }
-
-  ///////////////////////////////////////// VALIDACION ESPECIAL PARA GESTIONAR //////////////////////////////////////////////////////////
-
-  ValidatorCamposDependientes(
-    idCampo: string,
-    contactoCampo: string
-  ): ValidatorFn {
-    return (formGroup: AbstractControl): ValidationErrors | null => {
-      const idControl = formGroup.get(idCampo);
-      const contactoControl = formGroup.get(contactoCampo);
-      if (
-        idControl!.value == 1 ||
-        (idControl!.value == 3 && contactoCampo != 'gest_fecha_prox_pago')
-      ) {
-        if (!contactoControl!.value || contactoControl!.value.trim() === '') {
-          contactoControl!.setErrors({ ['contactoRequerido']: true });
-          return { ['contactoRequerido']: true };
-        }
-      }
-      if (
-        contactoControl!.errors &&
-        contactoControl!.errors['contactoRequerido']
-      ) {
-        delete contactoControl!.errors['contactoRequerido'];
-        if (Object.keys(contactoControl!.errors).length === 0) {
-          contactoControl!.setErrors(null);
-        }
-      }
-
-      return null;
-    };
-  }
-  ValidatorCamposDependientes2(
-    idCampo: string,
-    contactoCampo: string
-  ): ValidatorFn {
-    return (formGroup: AbstractControl): ValidationErrors | null => {
-      const idControl = formGroup.get(idCampo);
-      const contactoControl = formGroup.get(contactoCampo);
-
-      if (idControl!.value == 2) {
-        if (!contactoControl!.value || contactoControl!.value.trim() === '') {
-          contactoControl!.setErrors({ ['contactoRequerido']: true });
-          return { ['contactoRequerido']: true };
-        }
-      }
-      if (
-        contactoControl!.errors &&
-        contactoControl!.errors['contactoRequerido']
-      ) {
-        delete contactoControl!.errors['contactoRequerido'];
-        if (Object.keys(contactoControl!.errors).length === 0) {
-          contactoControl!.setErrors(null);
-        }
-      }
-
-      return null;
-    };
-  }
-
-  validarVolverLlamar(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const gestVolverLlamar = control.get('gest_volver_llamar');
-      const gestFechaVolverLlamar = control.get('gest_fecha_volver_llamar');
-      const gestHoraVolverLlamar = control.get('gest_hora_volver_llamar');
-
-      if (gestVolverLlamar && gestVolverLlamar.value) {
-        if (!gestFechaVolverLlamar || !gestFechaVolverLlamar.value) {
-          gestFechaVolverLlamar?.setErrors({ required: true });
-          return { fechaVolverLlamarRequired: true };
-        }
-        if (!gestHoraVolverLlamar || !gestHoraVolverLlamar.value) {
-          gestHoraVolverLlamar?.setErrors({ required: true });
-          return { horaVolverLlamarRequired: true };
-        }
-      }
-
-      return null;
-    };
-  }
 }

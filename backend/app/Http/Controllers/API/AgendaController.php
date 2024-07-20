@@ -4,7 +4,6 @@ namespace App\Http\Controllers\API;
 
 use App\Models\Agenda;
 use App\Models\agendadetalle;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Throwable;
