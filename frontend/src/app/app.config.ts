@@ -13,7 +13,7 @@ export const projectProps: BryntumProjectComboProps = {
 };
 
 export const calendarProps: BryntumCalendarProps = {
-  date : new Date(2024, 6, 12),
+  date : new Date(2024, 6, 21),
   
   
     

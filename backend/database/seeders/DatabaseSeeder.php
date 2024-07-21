@@ -18,7 +18,6 @@ class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        //Persona::factory()->count(50)->create();
         Consultorio::factory()->count(1)->create();
         Medico::factory()->count(20)->create();
         Paciente::factory()->count(25)->create();
@@ -45,46 +44,5 @@ class DatabaseSeeder extends Seeder
                 'horarioatencion_id' => $arrayHorarioAtencion[array_rand($arrayHorarioAtencion)]
             ]);
          }
-
-        /**Agenda::factory()->create([
-            'Fecha' => date("Y-m-d",strtotime("2024/07/15")),
-            'horarioatenciondetalle_id' => 1
-        ]);
-        Agenda::factory()->create([
-            'Fecha' => date("Y-m-d",strtotime("2024/07/16")),
-            'horarioatenciondetalle_id' => 1
-        ]);
-        Agenda::factory()->create([
-            'Fecha' => date("Y-m-d",strtotime("2024/07/17")),
-            'horarioatenciondetalle_id' => 1
-        ]);
-        Agenda::factory()->create([
-            'Fecha' => date("Y-m-d",strtotime("2024/07/18")),
-            'horarioatenciondetalle_id' => 1
-        ]);
-        Agenda::factory()->create([
-            'Fecha' => date("Y-m-d",strtotime("2024/07/19")),
-            'horarioatenciondetalle_id' => 1
-        ]);
-
-        agendadetalle::factory()->create([
-            'agenda_id' => 1,
-            'HoraInicio' => date("H:i",strtotime("07:30")),
-            'HoraFin' => date("H:i",strtotime("8:00")),
-            'Estado' => 'Disponible'
-        ]);
-        agendadetalle::factory()->create([
-            'agenda_id' => 1,
-            'HoraInicio' => date("H:i",strtotime("08:00")),
-            'HoraFin' => date("H:i",strtotime("8:30")),
-            'Estado' => 'Disponible'
-        ]);
-        agendadetalle::factory()->create([
-            'agenda_id' => 1,
-            'HoraInicio' => date("H:i",strtotime("08:30")),
-            'HoraFin' => date("H:i",strtotime("09:00")),
-            'Estado' => 'Disponible'
-        ]);*/
-
     }
 }

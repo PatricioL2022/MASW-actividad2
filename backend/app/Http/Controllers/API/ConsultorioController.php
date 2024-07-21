@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Consultorio;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 

@@ -26,7 +26,13 @@ export class CitaagendamedicoComponent {
 
 
 events = [
-    
+  {
+      id         : 1,
+      name       : 'Meeting',
+      startDate  : '2024-07-21T10:00:00',
+      endDate    : '2024-07-21T11:00:00',
+      resourceId : 1
+  }
 ];
 
 calendarProps = calendarProps;

@@ -148,6 +148,25 @@ export class Alertas {
   }
 
 
+  CerrarSesion(): Promise<boolean> {
+    return Swal.fire({
+      title: '¿Está seguro de cerrar sesion?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      confirmButtonColor: '#32c2de',
+      cancelButtonColor: '#f33734',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+  }
+
+
   
 
 

@@ -1,3 +1,4 @@
+import { NgModule } from '@angular/core';
 import { Routes } from '@angular/router';
 import { PersonasComponent } from './Componentes/personas/personas.component';
 import { InicioComponent } from './Componentes/inicio/inicio.component';
@@ -10,6 +11,8 @@ import { MedicosComponent } from './Componentes/medicos/medicos.component';
 import { PacientesComponent } from './Componentes/pacientes/pacientes.component';
 import { CitaagendamedicoComponent } from './Componentes/cita/citaagendamedico/citaagendamedico.component';
 
+import { HorarioatencionComponent } from './Componentes/horarioatencion/horarioatencion.component';
+
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
   { path: 'inicio', component: InicioComponent },
@@ -18,7 +21,8 @@ export const routes: Routes = [
   { path: 'cita/agenda', component: CitapacienteComponent},
   { path: 'cita/agenda/paciente/:medico_id/:medico_nombre', component: CitaagendapacienteComponent},
   { path: 'cita/agenda/medico', component: CitaagendamedicoComponent},
-  { path: 'consultorios', component: ConsultoriosComponent },
   { path: 'medicos', component: MedicosComponent },
   { path: 'pacientes', component: PacientesComponent },
+  { path: 'consultorios', component: ConsultoriosComponent },
+  { path: 'horarioatencion', component: HorarioatencionComponent },
 ];

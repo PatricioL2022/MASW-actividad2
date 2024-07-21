@@ -6,25 +6,32 @@ use App\Http\Controllers\API\HorarioatencionController;
 use App\Http\Controllers\API\HorarioatenciondetalleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\API\PersonController;
 use App\Http\Controllers\API\ConsultorioController;
 use App\Http\Controllers\API\PersonaController;
 use App\Http\Controllers\API\MedicoController;
 use App\Http\Controllers\API\PacienteController;
+use App\Http\Controllers\API\UsuarioController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
 
-Route::prefix('v1/persons')->group(function () {
-    Route::get('/',[ PersonController::class, 'get']);
-    Route::post('/',[ PersonController::class, 'create']);
-    Route::delete('/{id}',[ PersonController::class, 'delete']);
-    Route::get('/{id}',[ PersonController::class, 'getById']);
-    Route::put('/{id}',[ PersonController::class, 'update']);
-});
+
+Route::get('/Usuarios', [UsuarioController::class, 'ListarUsuarios']);
+Route::post('/login', [UsuarioController::class, 'login']);
+Route::post('/register', [UsuarioController::class, 'signup']);
+
+
+
+Route::get('/Consultorios/{codigo},{rango}', [ConsultorioController::class, 'ListarConsultorios']);
+Route::get('/Consultorios/{id}', [ConsultorioController::class, 'BuscarId']);
+Route::get('/ConsultoriosFiltro/{tipo},{valor}', [ConsultorioController::class, 'Filtrar']);
+Route::post('/Consultorios', [ConsultorioController::class, 'Agregar']);
+Route::put('/Consultorios', [ConsultorioController::class, 'Editar']);
+Route::patch('/Consultorios', [ConsultorioController::class, 'EditarParcial']);
+Route::delete('/Consultorios/{id}',[ConsultorioController::class, 'Eliminar']);
+
 
 
 Route::get('/Consultorios/{codigo},{rango}', [ConsultorioController::class, 'ListarConsultorios']);
@@ -74,3 +81,12 @@ Route::get('/Agenda/Medicos', [AgendaController::class, 'obtenMedicos']);
 Route::get('/Agenda/Horarios/{medico_id}/{fecha}', [AgendaController::class, 'obtenHorarioDeAgenda']);
 
 Route::post('/Cita', [CitaController::class, 'Agregar']);
+Route::get('/test/{medico_id}', [HorarioatencionDetalleController::class, 'detalles']);
+
+Route::get('/Horarioatenciones', [HorarioatencionController::class, 'ListarHorarioatenciones']);
+Route::get('/Horarioatenciones/{codigo},{rango}', [HorarioatencionController::class, 'ListarHoraAtencionPag']);
+Route::get('/HorarioatencionesFiltro/{tipo},{valor}', [HorarioatencionController::class, 'Filtrar']);
+Route::get('/Horarioatenciones/{id}', [HorarioatencionController::class, 'BuscarId']);
+Route::post('/Horarioatenciones', [HorarioatencionController::class, 'Agregar']);
+Route::put('/Horarioatenciones', [HorarioatencionController::class, 'Editar']);
+Route::delete('/Horarioatenciones/{id}',[HorarioatencionController::class, 'Eliminar']);

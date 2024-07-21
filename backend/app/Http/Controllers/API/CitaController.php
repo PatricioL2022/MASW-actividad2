@@ -66,4 +66,16 @@ class CitaController
             return response()->json($data, 500);
         }
     }
+    public function ObtenCitasDeMedico($medico_id){
+        $data = DB::table('cita')
+        ->join('agendadetalle', 'cita.agendadetalle_id', '=', 'agendadetalle.id')
+        ->join('paciente', 'cita.paciente_id', '=', 'paciente.id')
+        ->join('persona', 'paciente.persona_id', '=', 'persona.id')
+        ->join('agenda', 'agendadetalle.agenda_id', '=', 'agenda.id')
+        ->join('horarioatenciondetalle', 'agenda.horarioatenciondetalle_id', '=', 'horarioatenciondetalle.id')
+        ->select('cita.id','persona.Nombres','persona.Apellidos','agendadetalle.HoraInicio','agendadetalle.HoraFin',
+        'agenda.Fecha')
+        ->where('horarioatenciondetalle.medico_id', '=', $medico_id)
+        ->first();
+    }
 }

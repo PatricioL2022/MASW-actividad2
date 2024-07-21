@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Persona;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,13 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('paciente', function (Blueprint $table) {
+        Schema::create('usuario', function (Blueprint $table) {
             $table->id();
-            $table->string('NumeroExpediente');
-            $table->string('Estado');
+            $table->string('Usuario', 25)->unique();
+            $table->string('Clave', 100);
+            $table->string('Estado', 13);
+            $table->date('FechaIn');
+            $table->date('FechaUp')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            $table->foreignIdFor(Persona::class)->constrained("persona");
+            $table->foreignIdFor(\App\Models\Persona::class)->constrained("persona");         
         });
     }
 
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('paciente');
+        Schema::dropIfExists('usuario');
     }
 };
