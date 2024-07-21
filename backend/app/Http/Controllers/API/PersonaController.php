@@ -13,10 +13,10 @@ class PersonaController
         $personas = Persona::all();
         $data = [
             'data' => $personas,
-            'message' => 'Exito',
+            'mensaje' => 'Exito',
             'exito' => 200
         ];
-        return response()->json($data, 200);
+        return response()->json($data);
     }
     public function ListarPersonasPag($codigo, $rango)
     {
@@ -30,7 +30,7 @@ class PersonaController
             'mensaje' => 'Exito',
             'exito' => 200
         ];
-        return response()->json($data, 200);
+        return response()->json($data);
     }
     public function Filtrar($tipo, $valor)
     {
@@ -39,20 +39,15 @@ class PersonaController
         if ($tipo == 0) {
             $query->where('Estado', $valor);
         } elseif ($tipo == 1) {
-            $query->where('Identificacion', strtoupper($valor))
-                ->where('Estado', 'Activo');
+            $query->where('Identificacion', strtoupper($valor));
         } elseif ($tipo == 2) {
-            $query->where('Nombres', strtoupper($valor))
-                ->where('Estado', 'Activo');
+            $query->where('Nombres', strtoupper($valor));
         } elseif ($tipo == 3) {
-            $query->where('Nombres', 'like', '%' . strtoupper($valor) . '%')
-                ->where('Estado', 'Activo');
+            $query->where('Nombres', 'like', '%' . strtoupper($valor) . '%');
         } elseif ($tipo == 4) {
-            $query->where('Apellidos', strtoupper($valor))
-                ->where('Estado', 'Activo');
+            $query->where('Apellidos', strtoupper($valor));
         } elseif ($tipo == 5) {
-            $query->where('Apellidos', 'like', '%' . strtoupper($valor) . '%')
-                ->where('Estado', 'Activo');
+            $query->where('Apellidos', 'like', '%' . strtoupper($valor) . '%');
         } else {
             $data = [
                 'data' => [],

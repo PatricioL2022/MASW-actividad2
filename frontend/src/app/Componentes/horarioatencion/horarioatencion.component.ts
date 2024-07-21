@@ -1,10 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
+import { FooterComponent } from "../../Plantillas/footer/footer.component";
+import { HeaderComponent } from "../../Plantillas/header/header.component";
+import { SidebarComponent } from "../../Plantillas/sidebar/sidebar.component";
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
-  Validators,
+  Validators
 } from '@angular/forms';
 import { map } from 'rxjs';
 import { ApiService } from '../../servicios/api.service';
@@ -16,7 +19,7 @@ import { Operaciones } from '../../Models/Operaciones';
 @Component({
   selector: 'app-horarioatencion',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FooterComponent, HeaderComponent, SidebarComponent],
   templateUrl: './horarioatencion.component.html',
   styleUrl: './horarioatencion.component.css'
 })

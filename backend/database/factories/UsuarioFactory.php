@@ -2,10 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Usuario;
 use App\Models\Persona;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
+use App\Models\Rol;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -13,16 +11,19 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class UsuarioFactory extends Factory
 {
-    protected $model = Usuario::class;
-    protected static ?string $password;
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
     public function definition(): array
     {
         return [
-            'Usuario' => $this->faker->firstName,
-            'Clave' => static::$password ??= Hash::make('password'),
-            'Estado' => $this->faker->randomElement(['Activo', 'Inactivo']),
-            'FechaIn' => $this->faker->date(),
+            'Usuario' => $this->faker->unique()->text(),
+            'Password' => $this->faker->password(),
+            'rol_id' => Rol::factory(),
             'persona_id' => Persona::factory(),
+            'Estado' => $this->faker->randomElement(['Activo', 'Inactivo']),
         ];
     }
 }

@@ -14,4 +14,7 @@ class Paciente extends Model
         'Estado',
         'persona_id',
     ];
+    public function persona() {
+        return $this->belongsTo(Persona::class, 'persona_id');
+    }
 }

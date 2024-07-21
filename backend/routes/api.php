@@ -7,10 +7,14 @@ use App\Http\Controllers\API\HorarioatenciondetalleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ConsultorioController;
+use App\Http\Controllers\API\LoginController;
 use App\Http\Controllers\API\PersonaController;
 use App\Http\Controllers\API\MedicoController;
 use App\Http\Controllers\API\PacienteController;
+use App\Http\Controllers\API\RolController;
 use App\Http\Controllers\API\UsuarioController;
+
+Route::post('/Login', [LoginController::class, 'Agregar']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -34,7 +38,8 @@ Route::delete('/Consultorios/{id}',[ConsultorioController::class, 'Eliminar']);
 
 
 
-Route::get('/Consultorios/{codigo},{rango}', [ConsultorioController::class, 'ListarConsultorios']);
+Route::get('/Consultorios', [ConsultorioController::class, 'ListarConsultorios']);
+Route::get('/Consultorios/{codigo},{rango}', [ConsultorioController::class, 'ListarConsultoriosPag']);
 Route::get('/Consultorios/{id}', [ConsultorioController::class, 'BuscarId']);
 Route::get('/ConsultoriosFiltro/{tipo},{valor}', [ConsultorioController::class, 'Filtrar']);
 Route::post('/Consultorios', [ConsultorioController::class, 'Agregar']);
@@ -76,8 +81,27 @@ Route::patch('/Pacientes', [PacienteController::class, 'EditarParcial']);
 Route::delete('/Pacientes/{id}',[PacienteController::class, 'Eliminar']);
 
 
+Route::get('/Rol', [RolController::class, 'ListarRol']);
+Route::get('/Rol/{codigo},{rango}', [RolController::class, 'ListarRolPag']);
+Route::get('/Rol/{id}', [RolController::class, 'BuscarId']);
+Route::get('/RolFiltro/{tipo},{valor}', [RolController::class, 'Filtrar']);
+Route::post('/Rol', [RolController::class, 'Agregar']);
+Route::put('/Rol', [RolController::class, 'Editar']);
+Route::patch('/Rol', [RolController::class, 'EditarParcial']);
+Route::delete('/Rol/{id}',[RolController::class, 'Eliminar']);
 
-Route::get('/HorarioAtencionDetalle/{medico_id}', [HorarioatencionDetalleController::class, 'detalles']);
+
+Route::get('/Usuario', [UsuarioController::class, 'ListarUsuarios']);
+Route::get('/Usuario/{codigo},{rango}', [UsuarioController::class, 'ListarUsuariosPag']);
+Route::get('/Usuario/{id}', [UsuarioController::class, 'BuscarId']);
+Route::get('/UsuarioFiltro/{tipo},{valor}', [UsuarioController::class, 'Filtrar']);
+Route::post('/Usuario', [UsuarioController::class, 'Agregar']);
+Route::put('/Usuario', [UsuarioController::class, 'Editar']);
+Route::patch('/Usuario', [UsuarioController::class, 'EditarParcial']);
+Route::delete('/Usuario/{id}',[UsuarioController::class, 'Eliminar']);
+
+
+Route::get('/test/{medico_id}', [HorarioatencionDetalleController::class, 'detalles']);
 Route::post('/Agenda', [AgendaController::class, 'Agregar']);
 Route::get('/Agenda/Medicos', [AgendaController::class, 'obtenMedicos']);
 Route::get('/Agenda/Horarios/{medico_id}/{fecha}', [AgendaController::class, 'obtenHorarioDeAgenda']);

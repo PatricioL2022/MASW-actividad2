@@ -14,15 +14,16 @@ class PacienteController
         $Pacientes = Paciente::all();
         $data = [
             'data' => $Pacientes,
-            'message' => 'Exito',
+            'mensaje' => 'Exito',
             'exito' => 200
         ];
-        return response()->json($data, 200);
+        return response()->json($data);
     }
 
     public function ListarPacientesPag($codigo, $rango)
     {
         $q = Paciente::join('persona', 'paciente.persona_id', '=', 'persona.id')
+            ->where('paciente.Estado', 'Activo')
             ->select(
                 'paciente.id',
                 'paciente.NumeroExpediente',
@@ -48,7 +49,7 @@ class PacienteController
 
         $data = [
             'data' => $q,
-            'message' => 'Exito',
+            'mensaje' => 'Exito',
             'exito' => 200
         ];
         return response()->json($data);
@@ -78,7 +79,7 @@ class PacienteController
 
         if (!$Paciente) {
             $data = [
-                'message' => 'Paciente no encontrado',
+                'mensaje' => 'Paciente no encontrado',
                 'status' => 404
             ];
             return response()->json($data);
@@ -103,36 +104,31 @@ class PacienteController
                 break;
             case 1:
                 $query->join('persona', 'paciente.persona_id', '=', 'persona.id')
-                    ->where('persona.Identificacion', strtoupper($valor))
-                    ->where('paciente.Estado', 'Activo');
+                    ->where('persona.Identificacion', strtoupper($valor));
                 break;
 
             case 2:
                 $query
                     ->join('persona', 'paciente.persona_id', '=', 'persona.id')
-                    ->where('persona.Nombres', strtoupper($valor))
-                    ->where('paciente.Estado', 'Activo');
+                    ->where('persona.Nombres', strtoupper($valor));
                 break;
 
             case 3:
                 $query
                     ->join('persona', 'paciente.persona_id', '=', 'persona.id')
-                    ->where('persona.Nombres', 'like', '%' . strtoupper($valor) . '%')
-                    ->where('paciente.Estado', 'Activo');
+                    ->where('persona.Nombres', 'like', '%' . strtoupper($valor) . '%');
                 break;
 
             case 4:
                 $query
                     ->join('persona', 'paciente.persona_id', '=', 'persona.id')
-                    ->where('persona.Apellidos', strtoupper($valor))
-                    ->where('paciente.Estado', 'Activo');
+                    ->where('persona.Apellidos', strtoupper($valor));
                 break;
 
             case 5:
                 $query
                     ->join('persona', 'paciente.persona_id', '=', 'persona.id')
-                    ->where('persona.Apellidos', 'like', '%' . strtoupper($valor) . '%')
-                    ->where('paciente.Estado', 'Activo');
+                    ->where('persona.Apellidos', 'like', '%' . strtoupper($valor) . '%');
                 break;
 
             default:
@@ -166,7 +162,6 @@ class PacienteController
 
         $data = [
             'data' => $result,
-            'message' => 'Paciente actualizado',
             'exito' => 200
         ];
 
@@ -185,7 +180,7 @@ class PacienteController
         if ($validator->fails()) {
             $data = [
                 'data' =>  $validator->errors(),
-                'message' => 'Error en la validación de los datos',
+                'mensaje' => 'Error en la validación de los datos',
                 'exito' => 400
             ];
             return response()->json($data);
@@ -200,7 +195,7 @@ class PacienteController
         if (!$Paciente) {
             $data = [
                 'data' =>  '',
-                'message' => 'Error al crear el estudiante',
+                'mensaje' => 'Error al crear el estudiante',
                 'exito' => 500
             ];
             return response()->json($data);
@@ -208,7 +203,7 @@ class PacienteController
 
         $data = [
             'data' =>  $Paciente,
-            'message' => '',
+            'mensaje' => '',
             'exito' => 201
         ];
 
@@ -220,7 +215,7 @@ class PacienteController
 
         if (!$Paciente) {
             $data = [
-                'message' => 'Paciente no encontrado',
+                'mensaje' => 'Paciente no encontrado',
                 'status' => 404
             ];
             return response()->json($data);
@@ -235,7 +230,7 @@ class PacienteController
         if ($validator->fails()) {
             $data = [
                 'data' =>  $validator->errors(),
-                'message' => 'Error en la validación de los datos',
+                'mensaje' => 'Error en la validación de los datos',
                 'exito' => 400
             ];
             return response()->json($data);
@@ -249,7 +244,7 @@ class PacienteController
 
         $data = [
             'data' =>  $Paciente,
-            'message' => 'Paciente actualizado',
+            'mensaje' => 'Paciente actualizado',
             'exito' => 200
         ];
 
@@ -263,7 +258,7 @@ class PacienteController
         if (!$Paciente) {
             $data = [
                 'data' =>  '',
-                'message' => 'Paciente no encontrado',
+                'mensaje' => 'Paciente no encontrado',
                 'exito' => 404
             ];
             return response()->json($data);
@@ -277,7 +272,7 @@ class PacienteController
 
         if ($validator->fails()) {
             $data = [
-                'message' => 'Error en la validación de los datos',
+                'mensaje' => 'Error en la validación de los datos',
                 'errors' => $validator->errors(),
                 'status' => 400
             ];
@@ -299,7 +294,7 @@ class PacienteController
         $Paciente->save();
 
         $data = [
-            'message' => 'Estudiante actualizado',
+            'mensaje' => 'Estudiante actualizado',
             'Paciente' => $Paciente,
             'status' => 200
         ];

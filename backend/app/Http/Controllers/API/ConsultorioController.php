@@ -8,7 +8,17 @@ use Illuminate\Support\Facades\Validator;
 
 class ConsultorioController
 {
-    public function ListarConsultorios($codigo, $rango)
+    public function ListarConsultorios()
+    {
+        $Consultorios = Consultorio::all();
+        $data = [
+            'data' => $Consultorios,
+            'mensaje' => 'Exito',
+            'exito' => 200
+        ];
+        return response()->json($data);
+    }
+    public function ListarConsultoriosPag($codigo, $rango)
     {
         $q = Consultorio::where('Estado', 'Activo')
             ->orderBy('id', 'desc')
@@ -29,20 +39,18 @@ class ConsultorioController
         if ($tipo == 0) {
             $query->where('Estado', $valor);
         } elseif ($tipo == 1) {
-            $query->where('Ruc', strtoupper($valor))
-                ->where('Estado', 'Activo');
+            $query->where('Ruc', strtoupper($valor));
         } elseif ($tipo == 2) {
-            $query->where('Nombre', strtoupper($valor))
-                ->where('Estado', 'Activo');
+            $query->where('Nombre', strtoupper($valor));
         } elseif ($tipo == 3) {
-            $query->where('Nombre', 'like', '%' . strtoupper($valor) . '%')
-                ->where('Estado', 'Activo');
+            $query->where('Nombre', 'like', '%' . strtoupper($valor) . '%');
         } elseif ($tipo == 4) {
-            $query->where('NombreComercial', strtoupper($valor))
-                ->where('Estado', 'Activo');
+            $query->where('NombreComercial', strtoupper($valor));
         } elseif ($tipo == 5) {
-            $query->where('NombreComercial', 'like', '%' . strtoupper($valor) . '%')
-                ->where('Estado', 'Activo');
+            $query->where('NombreComercial', 'like', '%' . strtoupper($valor) . '%');
+        } elseif ($tipo == 6) {
+            $query->where('Ruc', strtoupper($valor))
+                ->orWhere('Nombre', 'like', '%' . strtoupper($valor) . '%');
         } else {
             $data = [
                 'data' => [],
@@ -69,10 +77,10 @@ class ConsultorioController
 
         if (!$Consultorio) {
             $data = [
-                'message' => 'Consultorio no encontrado',
+                'mensaje' => 'Consultorio no encontrado',
                 'exito' => 404
             ];
-            return response()->json($data, 404);
+            return response()->json($data);
         }
 
         $data = [
@@ -80,7 +88,7 @@ class ConsultorioController
             'exito' => 200
         ];
 
-        return response()->json($data, 200);
+        return response()->json($data);
     }
     public function Agregar(Request $request)
     {
@@ -100,10 +108,10 @@ class ConsultorioController
         if ($validator->fails()) {
             $data = [
                 'data' =>  $validator->errors(),
-                'message' => 'Error en la validación de los datos',
+                'mensaje' => 'Error en la validación de los datos',
                 'exito' => 400
             ];
-            return response()->json($data, 400);
+            return response()->json($data);
         }
 
         $Consultorio = Consultorio::create([
@@ -122,19 +130,19 @@ class ConsultorioController
         if (!$Consultorio) {
             $data = [
                 'data' =>  '',
-                'message' => 'Error al crear el estudiante',
+                'mensaje' => 'Error al crear el estudiante',
                 'exito' => 500
             ];
-            return response()->json($data, 500);
+            return response()->json($data);
         }
 
         $data = [
             'data' =>  $Consultorio,
-            'message' => '',
+            'mensaje' => '',
             'exito' => 201
         ];
 
-        return response()->json($data, 201);
+        return response()->json($data);
     }
     public function Editar(Request $request)
     {
@@ -142,7 +150,7 @@ class ConsultorioController
 
         if (!$Consultorio) {
             $data = [
-                'message' => 'Consultorio no encontrado',
+                'mensaje' => 'Consultorio no encontrado',
                 'exito' => 404
             ];
             return response()->json($data);
@@ -164,7 +172,7 @@ class ConsultorioController
         if ($validator->fails()) {
             $data = [
                 'data' =>  $validator->errors(),
-                'message' => 'Error en la validación de los datos',
+                'mensaje' => 'Error en la validación de los datos',
                 'exito' => 400
             ];
             return response()->json($data);
@@ -185,7 +193,7 @@ class ConsultorioController
 
         $data = [
             'data' =>  $Consultorio,
-            'message' => 'Consultorio actualizado',
+            'mensaje' => 'Consultorio actualizado',
             'exito' => 200
         ];
 
@@ -198,7 +206,7 @@ class ConsultorioController
         if (!$Consultorio) {
             $data = [
                 'data' =>  '',
-                'message' => 'Consultorio no encontrado',
+                'mensaje' => 'Consultorio no encontrado',
                 'exito' => 404
             ];
             return response()->json($data);
@@ -219,7 +227,7 @@ class ConsultorioController
 
         if ($validator->fails()) {
             $data = [
-                'message' => 'Error en la validación de los datos',
+                'mensaje' => 'Error en la validación de los datos',
                 'errors' => $validator->errors(),
                 'exito' => 400
             ];
@@ -267,14 +275,14 @@ class ConsultorioController
         $Consultorio->save();
 
         $data = [
-            'message' => 'Estudiante actualizado',
+            'mensaje' => 'Estudiante actualizado',
             'Consultorio' => $Consultorio,
             'exito' => 200
         ];
 
         return response()->json($data);
     }
-    
+
     public function Eliminar($id)
     {
 
@@ -309,6 +317,5 @@ class ConsultorioController
         }
 
         return response()->json($data);
-
     }
 }

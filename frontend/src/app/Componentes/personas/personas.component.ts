@@ -11,11 +11,14 @@ import { ApiService } from '../../servicios/api.service';
 import { TipoDeTexto } from '../../Control/TipoDeTexto';
 import { Alertas } from '../../Control/Alerts';
 import { Operaciones } from '../../Models/Operaciones';
+import { FooterComponent } from "../../Plantillas/footer/footer.component";
+import { SidebarComponent } from "../../Plantillas/sidebar/sidebar.component";
+import { HeaderComponent } from "../../Plantillas/header/header.component";
 
 @Component({
   selector: 'app-personas',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FooterComponent, SidebarComponent, HeaderComponent],
   templateUrl: './personas.component.html',
   styleUrl: './personas.component.css',
 })
@@ -35,6 +38,12 @@ export class PersonasComponent implements OnInit {
   }
   ngOnInit(): void {
     this.ListarElementos();
+    this.checkLocal();
+  }
+  checkLocal() {
+    if (!localStorage.getItem('usuario') || !localStorage.getItem('rol')) {
+      this.OperacionesM.Logout();
+    }
   }
   NombrePagina: string = 'Personas';
   TituloFormulario: string = '';

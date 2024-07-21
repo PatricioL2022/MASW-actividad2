@@ -1,0 +1,52 @@
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { provideRouter } from '@angular/router';
+
+import { routes } from './app.routes';
+import { provideHttpClient } from '@angular/common/http';
+import { ApiService } from './servicios/api.service';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
+
+import { BryntumCalendarProps, BryntumProjectComboProps } from '@bryntum/calendar-angular';
+
+export const projectProps: BryntumProjectComboProps = {
+  // Empty project config
+};
+
+export const calendarProps: BryntumCalendarProps = {
+  date : new Date(2024, 6, 21),
+  
+  
+    
+  modes : {
+    day : {
+        dayStartTime : 9,
+        dayEndTime:5
+    },
+    week : {
+        dayStartTime : 8
+    },
+    agenda : null,
+    month  : null,
+    year   : null
+},
+crudManager : {
+  transport : {
+      load : {
+          url : 'https://bryntum.com/products/calendar/docs/data/Calendar/examples/guides/readme/intro.json', credentials : 'omit'
+      },
+      sync : {
+        url : 'https://bryntum.com/products/calendar/docs/data/Calendar/examples/guides/readme/intro.json', credentials : 'omit'
+    }
+  },
+  autoLoad : true
+},
+
+
+};
+export const appConfig: ApplicationConfig = {
+  providers: [provideZoneChangeDetection({ eventCoalescing: true }),
+    provideNoopAnimations(),
+    provideRouter(routes),provideHttpClient()
+    , ApiService
+  ]
+};

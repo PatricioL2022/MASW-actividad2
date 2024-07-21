@@ -1,0 +1,356 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<div class="content-wrapper">
+  <div class="container-fluid">
+    <h4 class="NombrePage">{{ NombrePagina.toLocaleUpperCase() }}</h4>
+    <section class="content">
+      <div class="container-fluid">
+        <div class="card card-default">
+          @if(TituloFormulario == ''){
+          <!-- BARRA PRINCIPAL -->
+          <section class="horizontal-center">
+            <div class="card-header">
+              <div class="btn-group" role="group">
+                <button class="btnHome" (click)="ListarElementos()">
+                  <i class="fa-solid fa-house"></i>
+                </button>
+              </div>
+              <div class="btn-group float-right" role="group">
+                @if(itemBusqueda.value !== ''){
+                <label
+                  type="text-info"
+                  class="formControl CenterItemColorSecundario center ml-1"
+                  style="width: 50%"
+                  >{{ itemBusqueda.value }}</label
+                >
+                }
+                <button
+                  type="button"
+                  class="btnFilter ml-1"
+                  data-toggle="dropdown"
+                >
+                  <i class="fa-solid fa-filter"></i>
+                </button>
+                @if (itemBusqueda.value !== '' && itemBusqueda.value !==
+                'Estado') {
+                <div style="width: 50%">
+                  <input
+                    id="txtValorBusqueda"
+                    [formControl]="txtBusqueda"
+                    (keydown.enter)="FiltrarElemento()"
+                    (keyup)="ConvertirMayusculas()"
+                    class="form-control ml-2"
+                    type="text"
+                    placeholder="Buscar"
+                    autofocus
+                  />
+                </div>
+                } @if (itemBusqueda.value !== '' && itemBusqueda.value ===
+                'Estado') {
+                <div class="ml-2">
+                  <select
+                    class="form-select"
+                    [formControl]="txtBusqueda"
+                    [spellcheck]="false"
+                    style="width: 150px"
+                  >
+                    @for (estado of ParametrosEstado; track $index) {
+                    <option [value]="estado.value">
+                      {{ estado.name }}
+                    </option>
+                    }
+                  </select>
+                </div>
+                } @if (txtBusqueda.value !== '') {
+                <div>
+                  <button
+                    type="button"
+                    class="btnBuscar ml-2"
+                    (click)="FiltrarElemento()"
+                  >
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                  </button>
+                </div>
+                }
+
+                <button
+                  type="button"
+                  class="btnAgregar ml-2"
+                  (click)="AgregarEditarElemento(1)"
+                >
+                  <i class="fa-solid fa-circle-plus"></i>
+                </button>
+
+                <div class="dropdown-menu" role="menu">
+                  @for (item of ParametrosDeBusqueda; track $index) {
+                  <a class="dropdown-item" (click)="GetBusquedaPor(item)">{{
+                    item
+                  }}</a>
+                  }
+                </div>
+              </div>
+            </div>
+          </section>
+          <!-- FORMULARIO PARA LISTAR ELEMENTOS -->
+          <section class="expand-bottom">
+            <div class="card-body">
+              <table
+                class="table table-bordered table-responsive table-auto small"
+              >
+                <thead class="card-header">
+                  <tr>
+                    <th style="width: 10px">#</th>
+                    <th>Acciones</th>
+                    <th *ngFor="let header of headers">{{ header }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let datos of DatosCargaMasiva; let i = index">
+                    <th>{{ InicioPaginacion + i + 1 }}</th>
+                    <th>
+                      <div class="btn-group" role="group">
+                        <button
+                          class="btnVer"
+                          (click)="CargarElemento(datos, 3)"
+                        >
+                          <i class="fa-regular fa-eye"></i>
+                        </button>
+                        <button
+                          class="ml-2 btnEditar"
+                          (click)="CargarElemento(datos, 2)"
+                        >
+                          <i class="fa-solid fa-pencil"></i>
+                        </button>
+                        <button
+                          class="ml-2 btnEliminar"
+                          (click)="EliminarElemento(datos)"
+                        >
+                          <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                      </div>
+                    </th>
+                    <td *ngFor="let header of headers">{{ datos[header] }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            @if(ListaElementos.length != 0){
+            <div class="card-footer">
+              <div class="row">
+                <div class="col-lg-2 col-6">
+                  <p>
+                    Total<strong>&nbsp;{{ ContadorDatos }}</strong>
+                  </p>
+                </div>
+                <div class="col-lg-2 col-6"></div>
+                <div class="col-lg-2 col-6">
+                  <div>
+                    <p>
+                      Elementos<strong>&nbsp;{{ InicioPaginacion + 1 }}</strong
+                      >-<strong
+                        >&nbsp;{{ InicioPaginacion + RangoPaginacion }}</strong
+                      >
+                    </p>
+                  </div>
+                </div>
+                <div class="col-lg-2 col-6"></div>
+                <div class="col-lg-4 col-12">
+                  <div class="form-group">
+                    <div class="float-right">
+                      <small>
+                        @if (FraccionDatos !== 0||InicioPaginacion !==0)
+                        {<button
+                          (click)="
+                            InicioPaginacion == 0
+                              ? BtnPrevious(0, 1)
+                              : BtnPrevious(0)
+                          "
+                          type="button"
+                          class="BtnNextPrevious"
+                          aria-label=""
+                          style="display: inline-block"
+                        >
+                          <i class="bi bi-arrow-left-circle"></i>
+                          Anterior</button
+                        >} @if((InicioPaginacion + RangoPaginacion) <
+                        ContadorDatos||ContadorDatos==RangoDatos){
+                        <button
+                          (click)="
+                            InicioPaginacion + RangoPaginacion == ContadorDatos
+                              ? BtnNext(0, 1)
+                              : BtnNext(0)
+                          "
+                          type="button"
+                          class="BtnNextPrevious ml-2"
+                          aria-label=""
+                          style="display: inline-block"
+                        >
+                          Siguiente <i class="bi bi-arrow-right-circle"></i>
+                        </button>
+                        }
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            }
+          </section>
+          } @else{
+          <section class="vertical-center">
+            <div class="card-body">
+              <div class="card-header">
+                <button
+                  type="button"
+                  (click)="EncerarComponentes()"
+                  class="btn btn-close float-right"
+                ></button>
+                <h2 class="Centrar">
+                  {{ TituloFormulario }}&nbsp;{{
+                    NombrePagina.toLocaleLowerCase()
+                  }}
+                </h2>
+              </div>
+              <div class="card-body">
+                <form class="" [formGroup]="ElementoForm">
+                  <div class="row">
+                    @for (control of formControls; track $index) {
+                    <div class="col-md-4 col-12">
+                      @if (control.name != 'persona_id' && control.tipo !=
+                      'checkbox') {
+                      <div class="form-group">
+                        <span><small>*</small>{{ control.label }}</span>
+                        <input
+                          [type]="
+                            control.tipo == 'number' ? 'text' : control.tipo
+                          "
+                          class="form-control"
+                          [id]="control.name"
+                          placeholder=""
+                          [formControlName]="control.name"
+                        />
+                        <section>
+                          @if(ElementoForm.get(control.name)?.hasError('required')
+                          && ElementoForm.get(control.name)?.touched){
+                          <div class="error-message">
+                            <span style="color: brown"
+                              >*Este campo es obligatorio.</span
+                            >
+                          </div>
+                          } @if(ElementoForm.get(control.name)?.value !== '' &&
+                          !validar.V_ValidadorGeneral(control.tipovalue,ElementoForm.get(control.name)?.value!)){
+                          <div class="error-message">
+                            <span style="color: brown">
+                              @if(control.tipovalue != 'email'){*Contiene
+                              caracteres no permitidos en este campo.} @else
+                              {*No tiene el formato correcto}</span
+                            >
+                          </div>
+                          } @if(ElementoForm.get(control.name)?.value !== '' &&
+                          control.tipovalue != ''&&
+                          !validar.V_LongitudMinMax(ElementoForm.get(control.name)?.value!,control.longitudMin!,control.longitudMax!)){
+                          <div class="error-message">
+                            <span style="color: brown"
+                              >*Caracteres requeridos minimo
+                              {{ control.longitudMin! }} y maximo
+                              {{ control.longitudMax! }}.</span
+                            >
+                          </div>
+                          }
+                        </section>
+                      </div>
+                      } @if (control.name == 'persona_id') {
+                      <div class="form-group">
+                        <label for="clinombres"
+                          >Id persona:&nbsp;{{
+                            ElementoForm.get(control.name)?.value!
+                          }}</label
+                        >
+                      </div>
+                      } @if (control.tipo === 'checkbox') {
+                      <div class="form-group ContenidoCentrado">
+                        <label for="{{ control.name }}">{{
+                          control.label
+                        }}</label>
+                        <div
+                          class="custom-control custom-switch"
+                          title="{{ control.label }}"
+                        >
+                          <input
+                            type="checkbox"
+                            class="custom-control-input"
+                            [id]="control.name"
+                            [formControlName]="control.name"
+                          />
+                          <label
+                            class="custom-control-label"
+                            for="{{ control.name }}"
+                            >{{
+                              ElementoForm.get(control.name)!.value
+                                ? "Activo"
+                                : "Inactivo"
+                            }}</label
+                          >
+                        </div>
+                      </div>
+                      }
+                    </div>
+                    }
+                  </div>
+                </form>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <span><small>*</small>Cedula/Ruc/Pasaporte</span>
+                      <input
+                        style="min-width: 250px"
+                        type="text"
+                        class="form-control"
+                        placeholder="Buscar Paciente ..."
+                        (keyup)="BuscarCliente($event)"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="clinombres">Nombre:&nbsp;{{ Persona }}</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-footer">
+                <div class="row ContenidoCentrado">
+                  <small>
+                    @if (TituloFormulario != 'Visualizar') {
+                    <button
+                      class="btnAceptar"
+                      [disabled]="ElementoForm.invalid"
+                      (click)="GuardarElemento(ElementoForm.value)"
+                      id="btnAgregar"
+                    >
+                      Guardar</button
+                    >}
+
+                    <button
+                      class="btnCancelar ml-3"
+                      (click)="EncerarComponentes()"
+                    >
+                      Cancelar
+                    </button>
+                  </small>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          }
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<app-footer></app-footer>

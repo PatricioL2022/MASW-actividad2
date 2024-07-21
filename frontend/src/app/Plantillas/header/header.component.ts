@@ -1,21 +1,41 @@
+import { Component, OnInit } from '@angular/core';
+import { Operaciones } from '../../Models/Operaciones';
+import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
-import { Alertas } from '../../Control/Alerts';
 
 @Component({
   selector: 'app-header',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css'
+  styleUrl: './header.component.css',
 })
-export class HeaderComponent {
-
-  constructor(private alerta: Alertas) {}
-    
-  CerrarSesion() {
-    this.alerta.CerrarSesion().then((confirmado) => {
-      if (confirmado) {
+export class HeaderComponent implements OnInit {
+  constructor(private OperacionesM: Operaciones) {}
+  ngOnInit(): void {
+    this.checkLocal();
+  }
+  Rol: string = '';
+  Usuario: string = '';
+  checkLocal() {
+    if (localStorage.getItem('usuario') || localStorage.getItem('rol')) {
+      this.Usuario = localStorage.getItem('usuario')!;
+      this.Rol = localStorage.getItem('rol')!;
+    }
+  }
+  Logout() {
+    Swal.fire({
+      title: 'Cerrar Sesión !',
+      text: '',
+      icon: 'warning',
+      showCancelButton: true,
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Aceptar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.OperacionesM.Logout();
       }
     });
   }

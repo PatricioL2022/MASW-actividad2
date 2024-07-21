@@ -20,4 +20,7 @@ class Medico extends Model
     public function persona() {
         return $this->belongsTo(Persona::class, 'persona_id');
     }
+    public function consultorio() {
+        return $this->belongsTo(Consultorio::class, 'consultorio_id');
+    }
 }

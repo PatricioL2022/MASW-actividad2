@@ -12,9 +12,13 @@ import { PacientesComponent } from './Componentes/pacientes/pacientes.component'
 import { CitaagendamedicoComponent } from './Componentes/cita/citaagendamedico/citaagendamedico.component';
 
 import { HorarioatencionComponent } from './Componentes/horarioatencion/horarioatencion.component';
+import { LoginComponent } from './Login/login/login.component';
+import { RolComponent } from './Componentes/rol/rol.component';
+import { UsuarioComponent } from './Componentes/usuario/usuario.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'inicio', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent },
   { path: 'inicio', component: InicioComponent },
   { path: 'personas', component: PersonasComponent },
   { path: 'agenda/:medico_id', component: AgendaComponent },
@@ -25,4 +29,6 @@ export const routes: Routes = [
   { path: 'pacientes', component: PacientesComponent },
   { path: 'consultorios', component: ConsultoriosComponent },
   { path: 'horarioatencion', component: HorarioatencionComponent },
+  { path: 'rol', component: RolComponent },
+  { path: 'usuario', component: UsuarioComponent },
 ];

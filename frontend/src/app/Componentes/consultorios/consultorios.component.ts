@@ -10,11 +10,14 @@ import {
 } from '@angular/forms';
 import { map } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { HeaderComponent } from "../../Plantillas/header/header.component";
+import { SidebarComponent } from "../../Plantillas/sidebar/sidebar.component";
+import { FooterComponent } from "../../Plantillas/footer/footer.component";
 
 @Component({
   selector: 'app-consultorios',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, HeaderComponent, SidebarComponent, FooterComponent],
   templateUrl: './consultorios.component.html',
   styleUrl: './consultorios.component.css',
 })
@@ -34,6 +37,12 @@ export class ConsultoriosComponent implements OnInit {
   }
   ngOnInit(): void {
     this.ListarElementos();
+    this.checkLocal();
+  }
+  checkLocal() {
+    if (!localStorage.getItem('usuario') || !localStorage.getItem('rol')) {
+      this.OperacionesM.Logout();
+    }
   }
   NombrePagina: string = 'Consultorio';
   TituloFormulario: string = '';

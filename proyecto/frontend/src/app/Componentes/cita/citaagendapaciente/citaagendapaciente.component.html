@@ -1,0 +1,46 @@
+<h4 class="NombrePage">Agendamiento de Cita</h4>
+<section class="content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <p-toast position="bottom-right" />
+            <p-confirmDialog />
+            <div class="row p-5">
+                <div class="col-md-5 pt-1">
+                    <p-calendar 
+                    [(ngModel)]="fecha" 
+                    [inline]="true"
+                    dateFormat="dd.mm.yy"
+                    [readonlyInput]="true"
+                    (onSelect)="mostrarHorarios()" />  
+                    <select class="form-control" [(ngModel)]="selectedPaciente" aria-label="Seleccione paciente">
+                        <option *ngFor="let paciente of pacientes" [value]="paciente.id">
+                            {{paciente.Nombres}} {{paciente.Apellidos}}
+                        </option>
+                    </select>      
+                </div>           
+                <div class="col-md-7 pt-1">
+                    <div class="row">
+                        <div class="col-md-6"><label class="btn btn-primary mt-2"></label> <span> Disponible</span> </div>
+                        <div class="col-md-6"><label class="btn btn-secondary mt-2" style="background-color: #E0E0E0;border-color: #E0E0E0;" disabled></label> <span> No Disponible</span> </div>
+                       
+                        <div class="col-md-3 p-2" *ngFor="let item of horarios">
+                            <p-button severity="info" *ngIf="item.Estado=='Disponible';else btnDisabled" (onClick)="confirmaAsistencia($event,item.HoraInicio,item.HoraFin,item.Id)" label=" {{ item.HoraInicio }}-{{ item.HoraFin }}" />
+                           
+                            <ng-template #btnDisabled> 
+                                <p-button severity="secondary" [disabled]="true"  label=" {{ item.HoraInicio }}-{{ item.HoraFin }}" />
+                               
+                            </ng-template> 
+                        </div>
+                        <div *ngIf="horarios.length == 0" class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Aviso!</strong> Nada para mostrar.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div> 
+        </div>
+    </div>
+</section>

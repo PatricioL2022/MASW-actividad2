@@ -1,7 +1,51 @@
-<section class="content NombrePage">
-    <div class="container-fluid">
-        <div class="ContenidoCentrado text-center" style="height: 50px;">
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<div class="content-wrapper">
+  <div class="container-fluid">
+    <section class="content NombrePage">
+      <div class="container-fluid">
+        <div class="ContenidoCentrado text-center" style="height: 50px">
           <h1 class="bounce-top Bienvenido"></h1>
         </div>
-    </div>
-  </section>
+      </div>
+    </section>
+    <section>
+      <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+          <div class="carousel">
+            <div class="d-flex justify-content-center h-100 mt-4">
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <figure>
+                    <img src="./assets/indice1.jpg" alt="" />
+                  </figure>
+                </div>
+                <div class="carousel-item">
+                  <figure>
+                    <img src="./assets/indice2.jpg" alt="" />
+                  </figure>
+                </div>
+                <div class="carousel-item">
+                  <figure>
+                    <img src="./assets/indice3.jpg" alt="" />
+                  </figure>
+                </div>
+              </div>
+            </div>
+
+            <button class="carousel-control prev" (click)="prevSlide()">
+              &#10094;
+            </button>
+            <button class="carousel-control next" (click)="nextSlide()">
+              &#10095;
+            </button>
+          </div>
+        </div>
+        <div class="col-md-2"></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<app-footer></app-footer>

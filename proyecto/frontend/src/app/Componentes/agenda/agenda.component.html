@@ -1,0 +1,42 @@
+<h4 class="NombrePage">Agenda</h4>
+<section class="content">
+    <div class="container-fluid">
+        <div class="card card-default">
+            <div class="row p-5">
+                <div class="col-md-3">Médico:</div>
+                <div class="col-md-9">{{medico}}</div>
+                <div class="col-md-3 pt-1">Horario Atención <span style="color: red;">*</span>:</div>
+                <div class="col-md-9 pt-1">
+                    <p-toast position="bottom-right" />
+                    <select class="form-control" [(ngModel)]="selectedHorario" aria-label="Default select example">
+                        <option *ngFor="let horarioItem of horarios" [value]="horarioItem.code">
+                            {{horarioItem.name}}
+                        </option>
+                      </select>
+
+                    <!--<p-dropdown 
+                    [options]="horarios" 
+                    [(ngModel)]="selectedHorario" 
+                    optionLabel="name"
+                    optionValue="code"
+                    placeholder="Seleccione Horario" />-->
+                </div>
+                <div class="col-md-3 pt-1"></div>
+                <div class="col-md-9 pt-1">
+                    <h6>Seleccione las fechas en las cuales brindará atención <span style="color: red;">*</span></h6>
+                    <p-calendar 
+                    [(ngModel)]="dates" 
+                    [inline]="true"
+                    selectionMode="multiple" 
+                    dateFormat="dd.mm.yy"
+                    [readonlyInput]="true" />            
+                </div>
+                <div class="col-md-3 pt-1"></div>
+                <div class="col-md-9 pt-1">
+                    <button (click)="guardarAgenda()" class="btn btn-primary">GUARDAR AGENDA</button>
+                </div>
+            </div> 
+        </div>
+    </div>
+</section>
+

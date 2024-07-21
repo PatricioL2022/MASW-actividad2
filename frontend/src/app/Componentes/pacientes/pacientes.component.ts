@@ -10,11 +10,14 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { FooterComponent } from "../../Plantillas/footer/footer.component";
+import { SidebarComponent } from "../../Plantillas/sidebar/sidebar.component";
+import { HeaderComponent } from "../../Plantillas/header/header.component";
 
 @Component({
   selector: 'app-pacientes',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FooterComponent, SidebarComponent, HeaderComponent],
   templateUrl: './pacientes.component.html',
   styleUrl: './pacientes.component.css',
 })
@@ -34,6 +37,12 @@ export class PacientesComponent implements OnInit {
   }
   ngOnInit(): void {
     this.ListarElementos();
+    this.checkLocal();
+  }
+  checkLocal() {
+    if (!localStorage.getItem('usuario') || !localStorage.getItem('rol')) {
+      this.OperacionesM.Logout();
+    }
   }
   NombrePagina: string = 'Paciente';
   TituloFormulario: string = '';
@@ -168,7 +177,7 @@ export class PacientesComponent implements OnInit {
       longitudMax: 100,
       validators: [
         Validators.required,
-        this.validar.validarLongitudMinMax(1, 120),
+        this.validar.validarLongitudMinMax(1, 100),
         this.validar.VFN_SoloNumeros(),
       ],
     },
@@ -276,10 +285,8 @@ export class PacientesComponent implements OnInit {
           map((datos) => {
             let person = datos[0];
             if (datos.length != 0) {
-              this.ElementoForm.addControl('persona_id', new FormControl());
               this.ElementoForm.patchValue({ persona_id: person.id });
               this.Persona = person.Nombres + ' ' + person.Apellidos;
-              // this.Id_Persona.patchValue(person.id);
             }
           })
         )
@@ -287,7 +294,6 @@ export class PacientesComponent implements OnInit {
     }
   }
   Persona: string = '';
-  // Id_Persona = new FormControl({ value: '', disabled: true }, Validators.required);
   // ****************************************** PAGINACION *****************************************************************
   DatosCargaMasiva!: any[];
   DatosTemporales: any[] = [];
