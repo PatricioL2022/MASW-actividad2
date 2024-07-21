@@ -54,6 +54,24 @@ class PacienteController
         return response()->json($data);
     }
 
+    public function ListarPacientesSelecciona()
+    {
+        $q = Paciente::join('persona', 'paciente.persona_id', '=', 'persona.id')
+            ->select(
+                'paciente.id',
+                'persona.Nombres',
+                'persona.Apellidos'
+            )
+            ->get();
+
+        $data = [
+            'data' => $q,
+            'message' => 'Exito',
+            'exito' => 200
+        ];
+        return response()->json($data);
+    }
+
     public function BuscarId($id)
     {
         $Paciente = Paciente::find($id);

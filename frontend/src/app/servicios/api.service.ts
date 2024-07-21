@@ -147,4 +147,12 @@ export class ApiService {
       })
     );
   }
+  GetCitasPorMedico(medico_id:number): Observable<any> {
+    let direccion = this.url + 'Cita/Medicos/'+medico_id;
+    return this.http.get(direccion);
+  }
+  GetPacientes(): Observable<any> {
+    let direccion = this.url + 'PacienteSelecciona';
+    return this.http.get(direccion);
+  }
 }

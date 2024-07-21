@@ -11,7 +11,12 @@
                     [inline]="true"
                     dateFormat="dd.mm.yy"
                     [readonlyInput]="true"
-                    (onSelect)="mostrarHorarios()" />            
+                    (onSelect)="mostrarHorarios()" />  
+                    <select class="form-control" [(ngModel)]="selectedPaciente" aria-label="Seleccione paciente">
+                        <option *ngFor="let paciente of pacientes" [value]="paciente.id">
+                            {{paciente.Nombres}} {{paciente.Apellidos}}
+                        </option>
+                    </select>      
                 </div>           
                 <div class="col-md-7 pt-1">
                     <div class="row">

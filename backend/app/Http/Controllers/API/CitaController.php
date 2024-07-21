@@ -76,6 +76,12 @@ class CitaController
         ->select('cita.id','persona.Nombres','persona.Apellidos','agendadetalle.HoraInicio','agendadetalle.HoraFin',
         'agenda.Fecha')
         ->where('horarioatenciondetalle.medico_id', '=', $medico_id)
-        ->first();
+        ->get();
+        $data = [
+            'data' => $data,
+            'mensaje' => 'Exito',
+            'exito' => 200
+        ];
+        return response()->json($data, 200);
     }
 }

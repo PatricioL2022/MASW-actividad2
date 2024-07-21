@@ -29,20 +29,17 @@ export const calendarProps: BryntumCalendarProps = {
     month  : null,
     year   : null
 },
-crudManager:{
-  eventStore : {
-    fields : [
-        { name : 'room' },
-        { name : 'rsvp' }
-    ]
-},
-transport : {
-    load : {
-        url : 'data/data.json'
+crudManager : {
+  transport : {
+      load : {
+          url : 'https://bryntum.com/products/calendar/docs/data/Calendar/examples/guides/readme/intro.json', credentials : 'omit'
+      },
+      sync : {
+        url : 'https://bryntum.com/products/calendar/docs/data/Calendar/examples/guides/readme/intro.json', credentials : 'omit'
     }
+  },
+  autoLoad : true
 },
-autoLoad : true
-}
 
 
 };

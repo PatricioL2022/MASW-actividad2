@@ -68,11 +68,13 @@ Route::delete('/Medicos/{id}',[MedicoController::class, 'Eliminar']);
 Route::get('/Pacientes', [PacienteController::class, 'ListarPacientes']);
 Route::get('/Pacientes/{codigo},{rango}', [PacienteController::class, 'ListarPacientesPag']);
 Route::get('/Pacientes/{id}', [PacienteController::class, 'BuscarId']);
+Route::get('/PacienteSelecciona', [PacienteController::class, 'ListarPacientesSelecciona']);
 Route::get('/PacientesFiltro/{tipo},{valor}', [PacienteController::class, 'Filtrar']);
 Route::post('/Pacientes', [PacienteController::class, 'Agregar']);
 Route::put('/Pacientes', [PacienteController::class, 'Editar']);
 Route::patch('/Pacientes', [PacienteController::class, 'EditarParcial']);
 Route::delete('/Pacientes/{id}',[PacienteController::class, 'Eliminar']);
+
 
 
 Route::get('/HorarioAtencionDetalle/{medico_id}', [HorarioatencionDetalleController::class, 'detalles']);
@@ -81,6 +83,7 @@ Route::get('/Agenda/Medicos', [AgendaController::class, 'obtenMedicos']);
 Route::get('/Agenda/Horarios/{medico_id}/{fecha}', [AgendaController::class, 'obtenHorarioDeAgenda']);
 
 Route::post('/Cita', [CitaController::class, 'Agregar']);
+Route::get('/Cita/Medicos/{medico_id}', [CitaController::class, 'ObtenCitasDeMedico']);
 Route::get('/test/{medico_id}', [HorarioatencionDetalleController::class, 'detalles']);
 
 Route::get('/Horarioatenciones', [HorarioatencionController::class, 'ListarHorarioatenciones']);
