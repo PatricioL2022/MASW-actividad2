@@ -24,6 +24,7 @@ class MedicoFactory extends Factory
             'NumeroCarnet' => $this->faker->unique()->numerify('CARNET######'),
             'persona_id' => Persona::factory(),
             'consultorio_id' => Consultorio::factory(),
+            'Estado' => $this->faker->randomElement(['Activo', 'Inactivo']),
         ];
     }
 }

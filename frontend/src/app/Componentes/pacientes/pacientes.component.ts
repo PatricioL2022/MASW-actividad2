@@ -1,25 +1,24 @@
+import { Component, OnInit } from '@angular/core';
+import { Operaciones } from '../../Models/Operaciones';
+import { TipoDeTexto } from '../../Control/TipoDeTexto';
+import { Alertas } from '../../Control/Alerts';
+import { map } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { map } from 'rxjs';
-import { ApiService } from '../../servicios/api.service';
-import { TipoDeTexto } from '../../Control/TipoDeTexto';
-import { Alertas } from '../../Control/Alerts';
-import { Operaciones } from '../../Models/Operaciones';
 
 @Component({
-  selector: 'app-personas',
+  selector: 'app-pacientes',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './personas.component.html',
-  styleUrl: './personas.component.css',
+  templateUrl: './pacientes.component.html',
+  styleUrl: './pacientes.component.css',
 })
-export class PersonasComponent implements OnInit {
+export class PacientesComponent implements OnInit {
   constructor(
     private OperacionesM: Operaciones,
     public validar: TipoDeTexto,
@@ -36,15 +35,14 @@ export class PersonasComponent implements OnInit {
   ngOnInit(): void {
     this.ListarElementos();
   }
-  NombrePagina: string = 'Personas';
+  NombrePagina: string = 'Paciente';
   TituloFormulario: string = '';
   ParametrosDeBusqueda: Array<string> = [
-    '',
     'Identificacion',
-    'Nombre Completo',
-    'Apellido Completo',
-    'Nombre Incompleto',
-    'Apellido Incompleto',
+    'Nombres Completos',
+    'Apellidos Completos',
+    'Nombres Incompletos',
+    'Apellidos Incompletos',
     'Estado',
   ];
   ParametrosEstado: any[] = [
@@ -79,6 +77,7 @@ export class PersonasComponent implements OnInit {
   // ****************************************** LISTAR ELEMENTOS *****************************************************************
   ListaElementos: any[] = [];
   headers: string[] = [];
+
   ListarElementos(num?: number) {
     if (num == 1) {
       this.FraccionDatos = 0;
@@ -86,7 +85,7 @@ export class PersonasComponent implements OnInit {
     }
     this.GetBusquedaPor('');
     this.OperacionesM.ListarElementos(
-      'Personas/',
+      'Pacientes/',
       this.FraccionDatos,
       this.RangoDatos
     )
@@ -110,19 +109,19 @@ export class PersonasComponent implements OnInit {
       tipo = 1;
       this.GetFiltrarElemento(valor, tipo);
     }
-    if (this.itemBusqueda.value === 'Nombre Completo') {
+    if (this.itemBusqueda.value === 'Nombres Completos') {
       tipo = 2;
       this.GetFiltrarElemento(valor, tipo);
     }
-    if (this.itemBusqueda.value === 'Nombre Incompleto') {
+    if (this.itemBusqueda.value === 'Nombres Incompletos') {
       tipo = 3;
       this.GetFiltrarElemento(valor, tipo);
     }
-    if (this.itemBusqueda.value === 'Apellido Completo') {
+    if (this.itemBusqueda.value === 'Apellidos Completos') {
       tipo = 4;
       this.GetFiltrarElemento(valor, tipo);
     }
-    if (this.itemBusqueda.value === 'Apellido Incompleto') {
+    if (this.itemBusqueda.value === 'Apellidos Incompletos') {
       tipo = 5;
       this.GetFiltrarElemento(valor, tipo);
     }
@@ -130,7 +129,7 @@ export class PersonasComponent implements OnInit {
 
   GetFiltrarElemento(valor: string, tipo: number) {
     this.ListaElementos = [];
-    this.OperacionesM.FiltrarElementos('PersonasFiltro/', tipo, valor)
+    this.OperacionesM.FiltrarElementos('PacientesFiltro/', tipo, valor)
       .pipe(
         map((datos) => {
           this.ListaElementos = datos;
@@ -154,196 +153,44 @@ export class PersonasComponent implements OnInit {
   EncerarComponentes() {
     this.TituloFormulario = '';
     this.resetForm();
+    //     this.Persona.patchValue('')
+    // this.Id_Persona.patchValue('')
   }
 
   ElementoForm!: FormGroup;
   formControls = [
     {
-      tipo: 'combobox',
-      name: 'TipoIdentificacion',
-      label: 'Tipo Identificación',
-
+      tipo: 'text',
+      tipovalue: 'number',
+      name: 'NumeroExpediente',
+      label: 'Numero Expediente',
       longitudMin: 1,
-      longitudMax: 12,
+      longitudMax: 100,
       validators: [
         Validators.required,
-        this.validar.validarLongitudMinMax(1, 12),
-      ],
-      optionList: [{ value: 'CI' }, { value: 'PAS' }, { value: 'RUC' }],
-    },
-    {
-      tipo: 'number',
-      name: 'Identificacion',
-      label: 'Identificacion',
-      longitudMin: 7,
-      longitudMax: 13,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(7, 13),
+        this.validar.validarLongitudMinMax(1, 120),
         this.validar.VFN_SoloNumeros(),
       ],
     },
     {
       tipo: 'text',
-      name: 'Nombres',
-      label: 'Nombres',
-      longitudMin: 1,
-      longitudMax: 120,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(1, 120),
-        this.validar.VFN_AlfaNumerico(),
-      ],
-    },
-    {
-      tipo: 'text',
-      name: 'Apellidos',
-      label: 'Apellidos',
-
-      longitudMin: 1,
-      longitudMax: 120,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(1, 120),
-        this.validar.VFN_AlfaNumerico(),
-      ],
-    },
-    {
-      tipo: 'combobox',
-      name: 'Genero',
-      label: 'Género',
-
-      longitudMin: 1,
-      longitudMax: 9,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(1, 9),
-      ],
-      optionList: [{ value: 'Masculino' }, { value: 'Femenino' }],
-    },
-    {
-      tipo: 'combobox',
-      name: 'GrupoSanguineo',
-      label: 'Grupo Sanguíneo',
-
-      longitudMin: 1,
-      longitudMax: 4,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(1, 4),
-      ],
-      optionList: [
-        { value: 'A+' },
-        { value: 'A-' },
-        { value: 'B+' },
-        { value: 'B-' },
-        { value: 'AB+' },
-        { value: 'AB-' },
-        { value: 'O+' },
-        { value: 'O-' },
-      ],
-    },
-    {
-      tipo: 'text',
-      name: 'Direccion',
-      label: 'Dirección',
-
-      longitudMin: 1,
-      longitudMax: 250,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(1, 250),
-        this.validar.VFN_AlfaNumerico(),
-      ],
-    },
-    {
-      tipo: 'number',
-      name: 'Telefono',
-      label: 'Teléfono',
-
-      longitudMin: 7,
-      longitudMax: 14,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(1, 14),
-        this.validar.VFN_SoloNumeros(),
-      ],
-    },
-    {
-      tipo: 'email',
-      name: 'Correo',
-      label: 'Correo',
-
-      longitudMin: 1,
-      longitudMax: 150,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(1, 150),
-        this.validar.VFN_Correo(),
-      ],
-    },
-    {
-      tipo: 'text',
-      name: 'Titulo',
-      label: 'Título',
-
-      longitudMin: 1,
-      longitudMax: 15,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(1, 15),
-        this.validar.VFN_AlfaNumerico(),
-      ],
-    },
-    {
-      tipo: 'date',
-      name: 'FechaNacimiento',
-      label: 'Fecha de Nacimiento',
-
-      longitudMin: 8,
-      longitudMax: 10,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(8, 10),
-      ],
-    },
-    {
-      tipo: 'text',
-      name: 'Foto',
-      label: 'Foto',
-
-      longitudMin: 1,
-      longitudMax: 300,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(1, 300),
-      ],
+      tipovalue: '',
+      name: 'persona_id',
+      label: 'Persona id',
+      validators: [Validators.required, this.validar.VFN_SoloNumeros()],
     },
     {
       tipo: 'checkbox',
+      tipovalue: 'checkbox',
       name: 'Estado',
       label: 'Estado',
-
-      longitudMin: 1,
-      longitudMax: 12,
-      validators: [],
       value: true,
     },
   ];
   resetForm() {
     this.ElementoForm.reset({
-      TipoIdentificacion: '',
-      Identificacion: '',
-      Nombres: '',
-      Apellidos: '',
-      Genero: '',
-      GrupoSanguineo: '',
-      Direccion: '',
-      Telefono: '',
-      Correo: '',
-      Titulo: '',
-      FechaNacimiento: '',
-      Foto: '',
+      NumeroExpediente: '',
+      persona_id: '',
       Estado: true,
     });
     this.ElementoForm.removeControl('id');
@@ -352,7 +199,7 @@ export class PersonasComponent implements OnInit {
   GuardarElemento(elemento: any) {
     elemento.id = elemento.id == undefined ? 0 : Number(elemento.id);
     elemento.Estado = elemento.Estado == true ? 'Activo' : 'Inactivo';
-    this.OperacionesM.GuardarElemento('Personas', elemento)
+    this.OperacionesM.GuardarElemento('Pacientes', elemento)
       .pipe(
         map((x) => {
           if (x == '200' || x == '201') {
@@ -376,20 +223,11 @@ export class PersonasComponent implements OnInit {
     this.ElementoForm.addControl('id', new FormControl());
     this.ElementoForm.reset({
       id: datos.id,
-      TipoIdentificacion: datos.TipoIdentificacion,
-      Identificacion: datos.Identificacion,
-      Nombres: datos.Nombres,
-      Apellidos: datos.Apellidos,
-      Genero: datos.Genero,
-      GrupoSanguineo: datos.GrupoSanguineo,
-      Direccion: datos.Direccion,
-      Telefono: datos.Telefono,
-      Correo: datos.Correo,
-      Titulo: datos.Titulo,
-      FechaNacimiento: datos.FechaNacimiento,
-      Foto: datos.Foto,
+      NumeroExpediente: datos.NumeroExpediente,
+      persona_id: datos.persona_id,
       Estado: datos.Estado == 'Activo' ? true : false,
     });
+    this.Persona = datos.Nombres + ' ' + datos.Apellidos;
     this.AgregarEditarElemento(tipo);
   }
   // ****************************************** PAGINACION *****************************************************************
@@ -399,7 +237,7 @@ export class PersonasComponent implements OnInit {
       id: elemento.id,
       Estado: elemento.Estado == 'Activo' ? 'Inactivo' : 'Activo',
     };
-    this.OperacionesM.EditarParcialElemento('Personas', edit)
+    this.OperacionesM.EditarParcialElemento('Pacientes', edit)
       .pipe(
         map((x) => {
           if (x == '200' || x == '201') {
@@ -414,7 +252,7 @@ export class PersonasComponent implements OnInit {
   EliminarElemento(elemento: any) {
     this.alerta.EliminarRegistro().then((confirmado) => {
       if (confirmado) {
-        this.OperacionesM.EliminarElemento('Personas/', elemento.id)
+        this.OperacionesM.EliminarElemento('Pacientes/', elemento.id)
           .pipe(
             map((x) => {
               if (x == '200' || x == '201') {
@@ -427,6 +265,29 @@ export class PersonasComponent implements OnInit {
       }
     });
   }
+  // ****************************************** EXTRAS *****************************************************************
+  BuscarCliente(reciv: any) {
+    let recivido = reciv.target.value.trim();
+    this.Persona = '';
+    this.ElementoForm.patchValue({ persona_id: '' });
+    if (recivido.length > 0) {
+      this.OperacionesM.FiltrarElementos('PersonasFiltro/', 1, recivido)
+        .pipe(
+          map((datos) => {
+            let person = datos[0];
+            if (datos.length != 0) {
+              this.ElementoForm.addControl('persona_id', new FormControl());
+              this.ElementoForm.patchValue({ persona_id: person.id });
+              this.Persona = person.Nombres + ' ' + person.Apellidos;
+              // this.Id_Persona.patchValue(person.id);
+            }
+          })
+        )
+        .subscribe();
+    }
+  }
+  Persona: string = '';
+  // Id_Persona = new FormControl({ value: '', disabled: true }, Validators.required);
   // ****************************************** PAGINACION *****************************************************************
   DatosCargaMasiva!: any[];
   DatosTemporales: any[] = [];

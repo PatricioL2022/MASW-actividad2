@@ -22,8 +22,6 @@ return new class extends Migration
             $table->string('Logo');
             $table->string('Correo');
             $table->string('DireccionMatriz');
-            $table->string('FechaIn');
-            $table->string('FechaUp');
             $table->string('Estado');
             $table->timestamps();
         });

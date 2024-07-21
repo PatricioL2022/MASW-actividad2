@@ -18,49 +18,42 @@ class MedicoController
         ];
         return response()->json($data, 200);
     }
-    public function Agregar(Request $request)
+
+    public function ListarMedicosPag($codigo, $rango)
     {
-        $validator = Validator::make($request->all(), [
-            'Especialidad' => 'required|max:100',
-            'Subespecialidad' => 'required|max:100',
-            'NumeroCarnet' => 'required|max:15',
-            'IdPersona' => 'required',
-            'IdConsultorio' => 'required',
-        ]);
-
-        if ($validator->fails()) {
-            $data = [
-                'data' =>  $validator->errors(),
-                'message' => 'Error en la validación de los datos',
-                'exito' => 400
-            ];
-            return response()->json($data, 400);
-        }
-
-        $Medico = Medico::create([
-            'Especialidad' => $request->Especialidad,
-            'Subespecialidad' => $request->Subespecialidad,
-            'NumeroCarnet' => $request->NumeroCarnet,
-            'IdPersona' => $request->IdPersona,
-            'IdConsultorio' => $request->IdConsultorio,
-        ]);
-
-        if (!$Medico) {
-            $data = [
-                'data' =>  '',
-                'message' => 'Error al crear el estudiante',
-                'exito' => 500
-            ];
-            return response()->json($data, 500);
-        }
+        $q = Medico::join('persona', 'medico.persona_id', '=', 'persona.id')
+            ->join('consultorio', 'medico.consultorio_id', '=', 'consultorio.id')
+            ->select(
+                'medico.id',
+                'medico.Especialidad',
+                'medico.Subespecialidad',
+                'medico.NumeroCarnet',
+                'persona.Identificacion',
+                'persona.Nombres',
+                'persona.Apellidos',
+                'persona.Genero',
+                'persona.Telefono',
+                'persona.Correo',
+                'persona.FechaNacimiento',
+                'consultorio.Nombre',
+                'consultorio.Ruc',
+                'consultorio.NombreComercial',
+                'consultorio.Direccion',
+                'consultorio.Telefono',
+                'consultorio.DireccionMatriz',
+                'medico.Estado',
+            )
+            ->orderBy('id', 'desc')
+            ->skip($codigo)
+            ->take($rango)
+            ->get();
 
         $data = [
-            'data' =>  $Medico,
-            'message' => '',
-            'exito' => 201
+            'data' => $q,
+            'message' => 'Exito',
+            'exito' => 200
         ];
-
-        return response()->json($data, 201);
+        return response()->json($data);
     }
     public function BuscarId($id)
     {
@@ -81,26 +74,132 @@ class MedicoController
 
         return response()->json($data, 200);
     }
-    public function Eliminar($id)
+    public function Filtrar($tipo, $valor)
     {
-        $Medico = Medico::find($id);
+        $query = Medico::query();
+
+        switch ($tipo) {
+
+            case 0:
+                $query->join('persona', 'medico.persona_id', '=', 'persona.id')
+                    ->where('medico.Estado', $valor);
+                break;
+            case 1:
+                $query->join('persona', 'medico.persona_id', '=', 'persona.id')
+                    ->where('persona.Identificacion', strtoupper($valor))
+                    ->where('medico.Estado', 'Activo');
+                break;
+
+            case 2:
+                $query
+                    ->join('persona', 'medico.persona_id', '=', 'persona.id')
+                    ->where('persona.Nombres', strtoupper($valor))
+                    ->where('medico.Estado', 'Activo');
+                break;
+
+            case 3:
+                $query
+                    ->join('persona', 'medico.persona_id', '=', 'persona.id')
+                    ->where('persona.Nombres', 'like', '%' . strtoupper($valor) . '%')
+                    ->where('medico.Estado', 'Activo');
+                break;
+
+            case 4:
+                $query
+                    ->join('persona', 'medico.persona_id', '=', 'persona.id')
+                    ->where('persona.Apellidos', strtoupper($valor))
+                    ->where('medico.Estado', 'Activo');
+                break;
+
+            case 5:
+                $query
+                    ->join('persona', 'medico.persona_id', '=', 'persona.id')
+                    ->where('persona.Apellidos', 'like', '%' . strtoupper($valor) . '%')
+                    ->where('medico.Estado', 'Activo');
+                break;
+
+            default:
+
+                return response()->json([
+                    'data' => [],
+                    'exito' => 400,
+                    'mensaje' => 'Tipo no válido'
+                ]);
+        }
+
+        $result = $query->select(
+            'medico.id',
+            'medico.NumeroExpediente',
+            'medico.persona_id',
+            'persona.Identificacion',
+            'persona.Nombres',
+            'persona.Apellidos',
+            'persona.TipoIdentificacion',
+            'persona.Genero',
+            'persona.Direccion',
+            'persona.Telefono',
+            'persona.Correo',
+            'persona.Titulo',
+            'persona.FechaNacimiento',
+            'persona.Foto',
+            'persona.GrupoSanguineo',
+            'medico.Estado'
+        )
+            ->orderBy('medico.id', 'desc')->take(100)->get();
+
+        $data = [
+            'data' => $result,
+            'message' => 'medico actualizado',
+            'exito' => 200
+        ];
+
+        return response()->json($data);
+    }
+    public function Agregar(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'Especialidad' => 'required|max:100',
+            'Subespecialidad' => 'required|max:100',
+            'NumeroCarnet' => 'required|max:15',
+            'persona_id' => 'required|unique:medico,NumeroExpediente',
+            'consultorio_id' => 'required',
+            'Estado' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $data = [
+                'data' =>  $validator->errors(),
+                'message' => 'Error en la validación de los datos',
+                'exito' => 400
+            ];
+            return response()->json($data, 400);
+        }
+
+        $Medico = Medico::create([
+            'Especialidad' => $request->Especialidad,
+            'Subespecialidad' => $request->Subespecialidad,
+            'NumeroCarnet' => $request->NumeroCarnet,
+            'persona_id' => $request->persona_id,
+            'consultorio_id' => $request->consultorio_id,
+            'Estado' => $request->Estado,
+        ]);
 
         if (!$Medico) {
             $data = [
-                'message' => 'Medico no encontrado',
-                'status' => 404
+                'data' =>  '',
+                'message' => 'Error al crear el estudiante',
+                'exito' => 500
             ];
-            return response()->json($data, 404);
+            return response()->json($data, 500);
         }
 
-        $Medico->delete();
-
         $data = [
-            'message' => 'Medico eliminada',
-            'status' => 200
+            'data' =>  $Medico,
+            'message' => '',
+            'exito' => 201
         ];
 
-        return response()->json($data, 200);
+        return response()->json($data, 201);
     }
     public function Editar(Request $request, $id)
     {
@@ -118,8 +217,9 @@ class MedicoController
             'Especialidad' => 'required|max:100',
             'Subespecialidad' => 'required|max:100',
             'NumeroCarnet' => 'required|max:15',
-            'IdPersona' => 'required',
-            'IdConsultorio' => 'required',
+            'persona_id' => 'required',
+            'consultorio_id' => 'required',
+            'Estado' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -134,8 +234,9 @@ class MedicoController
         $Medico->Especialidad = $request->Especialidad;
         $Medico->Subespecialidad = $request->Subespecialidad;
         $Medico->NumeroCarnet = $request->NumeroCarnet;
-        $Medico->IdPersona = $request->IdPersona;
-        $Medico->IdConsultorio = $request->IdConsultorio;
+        $Medico->persona_id = $request->persona_id;
+        $Medico->consultorio_id = $request->consultorio_id;
+        $Medico->Estado = $request->Estado;
 
         $Medico->save();
 
@@ -147,9 +248,9 @@ class MedicoController
 
         return response()->json($data, 200);
     }
-    public function EditarParcial(Request $request, $id)
+    public function EditarParcial(Request $request)
     {
-        $Medico = Medico::find($id);
+        $Medico = Medico::find($request->id);
 
         if (!$Medico) {
             $data = [
@@ -164,8 +265,9 @@ class MedicoController
             'Especialidad' => 'max:100',
             'Subespecialidad' => 'max:100',
             'NumeroCarnet' => 'max:15',
-            'IdPersona' => '',
-            'IdConsultorio' => '',
+            'persona_id' => '',
+            'consultorio_id' => '',
+            'Estado' => '',
         ]);
 
         if ($validator->fails()) {
@@ -189,12 +291,15 @@ class MedicoController
             $Medico->NumeroCarnet = $request->NumeroCarnet;
         }
 
-        if ($request->has('IdPersona')) {
-            $Medico->IdPersona = $request->IdPersona;
+        if ($request->has('persona_id')) {
+            $Medico->persona_id = $request->persona_id;
         }
 
-        if ($request->has('IdConsultorio')) {
-            $Medico->IdConsultorio = $request->IdConsultorio;
+        if ($request->has('consultorio_id')) {
+            $Medico->consultorio_id = $request->consultorio_id;
+        }
+        if ($request->has('Estado')) {
+            $Medico->Estado = $request->Estado;
         }
 
         $Medico->save();
@@ -202,6 +307,27 @@ class MedicoController
         $data = [
             'message' => 'Estudiante actualizado',
             'Medico' => $Medico,
+            'status' => 200
+        ];
+
+        return response()->json($data, 200);
+    }
+    public function Eliminar($id)
+    {
+        $Medico = Medico::find($id);
+
+        if (!$Medico) {
+            $data = [
+                'message' => 'Medico no encontrado',
+                'status' => 404
+            ];
+            return response()->json($data, 404);
+        }
+
+        $Medico->delete();
+
+        $data = [
+            'message' => 'Medico eliminada',
             'status' => 200
         ];
 

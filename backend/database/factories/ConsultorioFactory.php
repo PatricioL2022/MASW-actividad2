@@ -21,8 +21,6 @@ class ConsultorioFactory extends Factory
             'Logo' => $this->faker->imageUrl(100, 100, 'business'),
             'Correo' => $this->faker->unique()->safeEmail,
             'DireccionMatriz' => $this->faker->address,
-            'FechaIn' => $this->faker->date(),
-            'FechaUp' => $this->faker->date(),
             'Estado' => $this->faker->randomElement(['Activo', 'Inactivo']),
         ];
     }

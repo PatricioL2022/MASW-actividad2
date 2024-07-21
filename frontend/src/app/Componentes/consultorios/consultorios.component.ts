@@ -1,5 +1,7 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Operaciones } from '../../Models/Operaciones';
+import { TipoDeTexto } from '../../Control/TipoDeTexto';
+import { Alertas } from '../../Control/Alerts';
 import {
   FormControl,
   FormGroup,
@@ -7,19 +9,16 @@ import {
   Validators,
 } from '@angular/forms';
 import { map } from 'rxjs';
-import { ApiService } from '../../servicios/api.service';
-import { TipoDeTexto } from '../../Control/TipoDeTexto';
-import { Alertas } from '../../Control/Alerts';
-import { Operaciones } from '../../Models/Operaciones';
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-personas',
+  selector: 'app-consultorios',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './personas.component.html',
-  styleUrl: './personas.component.css',
+  templateUrl: './consultorios.component.html',
+  styleUrl: './consultorios.component.css',
 })
-export class PersonasComponent implements OnInit {
+export class ConsultoriosComponent implements OnInit {
   constructor(
     private OperacionesM: Operaciones,
     public validar: TipoDeTexto,
@@ -36,15 +35,15 @@ export class PersonasComponent implements OnInit {
   ngOnInit(): void {
     this.ListarElementos();
   }
-  NombrePagina: string = 'Personas';
+  NombrePagina: string = 'Consultorio';
   TituloFormulario: string = '';
   ParametrosDeBusqueda: Array<string> = [
     '',
-    'Identificacion',
+    'Ruc',
     'Nombre Completo',
-    'Apellido Completo',
+    'Nombre Comercial Completo',
     'Nombre Incompleto',
-    'Apellido Incompleto',
+    'Nombre Comercial Incompleto',
     'Estado',
   ];
   ParametrosEstado: any[] = [
@@ -86,7 +85,7 @@ export class PersonasComponent implements OnInit {
     }
     this.GetBusquedaPor('');
     this.OperacionesM.ListarElementos(
-      'Personas/',
+      'Consultorios/',
       this.FraccionDatos,
       this.RangoDatos
     )
@@ -106,7 +105,7 @@ export class PersonasComponent implements OnInit {
       tipo = 0;
       this.GetFiltrarElemento(valor, tipo);
     }
-    if (this.itemBusqueda.value === 'Identificacion') {
+    if (this.itemBusqueda.value === 'Ruc') {
       tipo = 1;
       this.GetFiltrarElemento(valor, tipo);
     }
@@ -118,11 +117,11 @@ export class PersonasComponent implements OnInit {
       tipo = 3;
       this.GetFiltrarElemento(valor, tipo);
     }
-    if (this.itemBusqueda.value === 'Apellido Completo') {
+    if (this.itemBusqueda.value === 'Nombre Comercial Completo') {
       tipo = 4;
       this.GetFiltrarElemento(valor, tipo);
     }
-    if (this.itemBusqueda.value === 'Apellido Incompleto') {
+    if (this.itemBusqueda.value === 'Nombre Comercial Incompleto') {
       tipo = 5;
       this.GetFiltrarElemento(valor, tipo);
     }
@@ -130,7 +129,7 @@ export class PersonasComponent implements OnInit {
 
   GetFiltrarElemento(valor: string, tipo: number) {
     this.ListaElementos = [];
-    this.OperacionesM.FiltrarElementos('PersonasFiltro/', tipo, valor)
+    this.OperacionesM.FiltrarElementos('ConsultoriosFiltro/', tipo, valor)
       .pipe(
         map((datos) => {
           this.ListaElementos = datos;
@@ -159,34 +158,36 @@ export class PersonasComponent implements OnInit {
   ElementoForm!: FormGroup;
   formControls = [
     {
-      tipo: 'combobox',
-      name: 'TipoIdentificacion',
-      label: 'Tipo Identificación',
+      tipo: 'text',
+      tipovalue: 'Text',
+      name: 'Nombre',
+      label: 'Nombre',
 
       longitudMin: 1,
-      longitudMax: 12,
+      longitudMax: 120,
       validators: [
         Validators.required,
-        this.validar.validarLongitudMinMax(1, 12),
+        this.validar.validarLongitudMinMax(1, 120),
+        this.validar.VFN_SoloLetras(),
       ],
-      optionList: [{ value: 'CI' }, { value: 'PAS' }, { value: 'RUC' }],
     },
     {
-      tipo: 'number',
-      name: 'Identificacion',
-      label: 'Identificacion',
-      longitudMin: 7,
+      tipo: 'text',
+      tipovalue: 'NumFija',
+      name: 'Ruc',
+      label: 'Ruc',
       longitudMax: 13,
       validators: [
         Validators.required,
-        this.validar.validarLongitudMinMax(7, 13),
+        this.validar.validarLongitudFija(13),
         this.validar.VFN_SoloNumeros(),
       ],
     },
     {
       tipo: 'text',
-      name: 'Nombres',
-      label: 'Nombres',
+      tipovalue: 'TextAlfa',
+      name: 'NombreComercial',
+      label: 'Nombre Comercial',
       longitudMin: 1,
       longitudMax: 120,
       validators: [
@@ -197,162 +198,105 @@ export class PersonasComponent implements OnInit {
     },
     {
       tipo: 'text',
-      name: 'Apellidos',
-      label: 'Apellidos',
-
-      longitudMin: 1,
-      longitudMax: 120,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(1, 120),
-        this.validar.VFN_AlfaNumerico(),
-      ],
-    },
-    {
-      tipo: 'combobox',
-      name: 'Genero',
-      label: 'Género',
-
-      longitudMin: 1,
-      longitudMax: 9,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(1, 9),
-      ],
-      optionList: [{ value: 'Masculino' }, { value: 'Femenino' }],
-    },
-    {
-      tipo: 'combobox',
-      name: 'GrupoSanguineo',
-      label: 'Grupo Sanguíneo',
-
-      longitudMin: 1,
-      longitudMax: 4,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(1, 4),
-      ],
-      optionList: [
-        { value: 'A+' },
-        { value: 'A-' },
-        { value: 'B+' },
-        { value: 'B-' },
-        { value: 'AB+' },
-        { value: 'AB-' },
-        { value: 'O+' },
-        { value: 'O-' },
-      ],
-    },
-    {
-      tipo: 'text',
+      tipovalue: 'TextCar',
       name: 'Direccion',
-      label: 'Dirección',
+      label: 'Direccion',
 
       longitudMin: 1,
       longitudMax: 250,
       validators: [
         Validators.required,
         this.validar.validarLongitudMinMax(1, 250),
-        this.validar.VFN_AlfaNumerico(),
       ],
     },
     {
-      tipo: 'number',
+      tipo: 'text',
+      tipovalue: 'number',
       name: 'Telefono',
-      label: 'Teléfono',
+      label: 'Telefono',
 
       longitudMin: 7,
-      longitudMax: 14,
+      longitudMax: 10,
       validators: [
         Validators.required,
-        this.validar.validarLongitudMinMax(1, 14),
+        this.validar.validarLongitudMinMax(7, 10),
         this.validar.VFN_SoloNumeros(),
       ],
     },
     {
-      tipo: 'email',
+      tipo: 'text',
+      tipovalue: 'numberDes',
+      name: 'PorcentajeIva',
+      label: 'Porcentaje del Iva',
+      validators: [Validators.required, this.validar.VFN_NumerosDesimales()],
+    },
+    {
+      tipo: 'text',
+      tipovalue: 'TextCar',
+      name: 'Logo',
+      label: 'Logo',
+
+      longitudMin: 1,
+      longitudMax: 250,
+      validators: [
+        Validators.required,
+        this.validar.validarLongitudMinMax(1, 250),
+      ],
+    },
+    {
+      tipo: 'text',
+      tipovalue: 'email',
       name: 'Correo',
       label: 'Correo',
 
       longitudMin: 1,
-      longitudMax: 150,
+      longitudMax: 50,
       validators: [
         Validators.required,
-        this.validar.validarLongitudMinMax(1, 150),
+        this.validar.validarLongitudMinMax(1, 50),
         this.validar.VFN_Correo(),
       ],
     },
     {
       tipo: 'text',
-      name: 'Titulo',
-      label: 'Título',
+      tipovalue: 'TextCar',
+      name: 'DireccionMatriz',
+      label: 'Direccion Matriz',
 
       longitudMin: 1,
-      longitudMax: 15,
+      longitudMax: 250,
       validators: [
         Validators.required,
-        this.validar.validarLongitudMinMax(1, 15),
-        this.validar.VFN_AlfaNumerico(),
-      ],
-    },
-    {
-      tipo: 'date',
-      name: 'FechaNacimiento',
-      label: 'Fecha de Nacimiento',
-
-      longitudMin: 8,
-      longitudMax: 10,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(8, 10),
-      ],
-    },
-    {
-      tipo: 'text',
-      name: 'Foto',
-      label: 'Foto',
-
-      longitudMin: 1,
-      longitudMax: 300,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(1, 300),
+        this.validar.validarLongitudMinMax(1, 250),
       ],
     },
     {
       tipo: 'checkbox',
+      tipovalue: 'checkbox',
       name: 'Estado',
       label: 'Estado',
-
-      longitudMin: 1,
-      longitudMax: 12,
-      validators: [],
       value: true,
     },
   ];
   resetForm() {
     this.ElementoForm.reset({
-      TipoIdentificacion: '',
-      Identificacion: '',
-      Nombres: '',
-      Apellidos: '',
-      Genero: '',
-      GrupoSanguineo: '',
+      Nombre: '',
+      Ruc: '',
+      NombreComercial: '',
       Direccion: '',
       Telefono: '',
+      PorcentajeIva: '',
+      Logo: '',
       Correo: '',
-      Titulo: '',
-      FechaNacimiento: '',
-      Foto: '',
-      Estado: true,
+      DireccionMatriz: '',
+      Estado: false,
     });
     this.ElementoForm.removeControl('id');
   }
-
   GuardarElemento(elemento: any) {
     elemento.id = elemento.id == undefined ? 0 : Number(elemento.id);
     elemento.Estado = elemento.Estado == true ? 'Activo' : 'Inactivo';
-    this.OperacionesM.GuardarElemento('Personas', elemento)
+    this.OperacionesM.GuardarElemento('Consultorios', elemento)
       .pipe(
         map((x) => {
           if (x == '200' || x == '201') {
@@ -376,18 +320,15 @@ export class PersonasComponent implements OnInit {
     this.ElementoForm.addControl('id', new FormControl());
     this.ElementoForm.reset({
       id: datos.id,
-      TipoIdentificacion: datos.TipoIdentificacion,
-      Identificacion: datos.Identificacion,
-      Nombres: datos.Nombres,
-      Apellidos: datos.Apellidos,
-      Genero: datos.Genero,
-      GrupoSanguineo: datos.GrupoSanguineo,
+      Nombre: datos.Nombre,
+      Ruc: datos.Ruc,
+      NombreComercial: datos.NombreComercial,
       Direccion: datos.Direccion,
       Telefono: datos.Telefono,
+      PorcentajeIva: datos.PorcentajeIva,
+      Logo: datos.Logo,
       Correo: datos.Correo,
-      Titulo: datos.Titulo,
-      FechaNacimiento: datos.FechaNacimiento,
-      Foto: datos.Foto,
+      DireccionMatriz: datos.DireccionMatriz,
       Estado: datos.Estado == 'Activo' ? true : false,
     });
     this.AgregarEditarElemento(tipo);
@@ -399,7 +340,7 @@ export class PersonasComponent implements OnInit {
       id: elemento.id,
       Estado: elemento.Estado == 'Activo' ? 'Inactivo' : 'Activo',
     };
-    this.OperacionesM.EditarParcialElemento('Personas', edit)
+    this.OperacionesM.EditarParcialElemento('Consultorios', edit)
       .pipe(
         map((x) => {
           if (x == '200' || x == '201') {
@@ -414,7 +355,7 @@ export class PersonasComponent implements OnInit {
   EliminarElemento(elemento: any) {
     this.alerta.EliminarRegistro().then((confirmado) => {
       if (confirmado) {
-        this.OperacionesM.EliminarElemento('Personas/', elemento.id)
+        this.OperacionesM.EliminarElemento('Consultorios/', elemento.id)
           .pipe(
             map((x) => {
               if (x == '200' || x == '201') {
