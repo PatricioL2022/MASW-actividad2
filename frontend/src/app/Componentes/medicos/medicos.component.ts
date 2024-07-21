@@ -10,11 +10,14 @@ import { Operaciones } from '../../Models/Operaciones';
 import { TipoDeTexto } from '../../Control/TipoDeTexto';
 import { Alertas } from '../../Control/Alerts';
 import { map } from 'rxjs';
+import { FooterComponent } from "../../Plantillas/footer/footer.component";
+import { HeaderComponent } from "../../Plantillas/header/header.component";
+import { SidebarComponent } from "../../Plantillas/sidebar/sidebar.component";
 
 @Component({
   selector: 'app-medicos',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FooterComponent, HeaderComponent, SidebarComponent],
   templateUrl: './medicos.component.html',
   styleUrl: './medicos.component.css',
 })

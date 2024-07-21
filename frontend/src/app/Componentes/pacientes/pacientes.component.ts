@@ -10,11 +10,14 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { FooterComponent } from "../../Plantillas/footer/footer.component";
+import { SidebarComponent } from "../../Plantillas/sidebar/sidebar.component";
+import { HeaderComponent } from "../../Plantillas/header/header.component";
 
 @Component({
   selector: 'app-pacientes',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FooterComponent, SidebarComponent, HeaderComponent],
   templateUrl: './pacientes.component.html',
   styleUrl: './pacientes.component.css',
 })
