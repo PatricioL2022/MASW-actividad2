@@ -69,7 +69,7 @@
           <div class="info">
             <figcaption>
               <small>
-                <p class="truncate-text d-block">Juan Perez</p>
+                <p class="truncate-text d-block">{{ Usuario }}</p>
               </small>
             </figcaption>
           </div>
@@ -88,6 +88,7 @@
                 <p>&nbsp;&nbsp;INICIO</p>
               </a>
             </li>
+            @if(Rol == 'Administrador'){
             <li class="nav-item">
               <a href="/consultorios" class="nav-link">
                 <i class="fa-regular fa-hospital"></i>
@@ -112,6 +113,7 @@
                 <p>&nbsp;&nbsp;PACIENTE</p>
               </a>
             </li>
+            }
           </ul>
         </nav>
       </div>
