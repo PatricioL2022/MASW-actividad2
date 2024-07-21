@@ -1,0 +1,4 @@
+.ContenidoCentrado{
+    display: grid;
+    place-items: center;
+}

@@ -19,6 +19,7 @@ class PacienteFactory extends Factory
     {
         return [
             'NumeroExpediente' => $this->faker->unique()->numerify('EXP######'),
+            'Estado' => $this->faker->randomElement(['Activo', 'Inactivo']),
             'persona_id' => Persona::factory(),
         ];
     }

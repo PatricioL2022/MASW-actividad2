@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('agenda', function (Blueprint $table) {
             $table->id();
-            $table->string('Fecha');
+            $table->date('Fecha');
             $table->timestamps();
             $table->softDeletes();
             $table->foreignIdFor(\App\Models\Horarioatenciondetalle::class)->constrained("horarioatenciondetalle");

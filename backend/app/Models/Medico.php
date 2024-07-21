@@ -13,10 +13,10 @@ class Medico extends Model
         'Especialidad',
         'Subespecialidad',
         'NumeroCarnet',
-        'IdPersona',
-        'IdConsultorio',
+        'persona_id',
+        'consultorio_id',
+        'Estado',
     ];
-
     public function persona() {
         return $this->belongsTo(Persona::class, 'persona_id');
     }

@@ -18,6 +18,69 @@ class HorarioatencionController
         ];
         return response()->json($data, 200);
     } 
+
+    public function ListarHoraAtencionPag($codigo, $rango)
+    {
+        $q = Horarioatencion::select(
+                'horarioatencion.id',
+                'horarioatencion.Nombre',
+                'horarioatencion.HoraInicio',
+                'horarioatencion.HoraFin',
+                'horarioatencion.HoraInicioReceso',
+                'horarioatencion.HoraFinReceso',
+            )
+            ->orderBy('id', 'asc')
+            ->skip($codigo)
+            ->take($rango)
+            ->get();
+
+        $data = [
+            'data' => $q,
+            'message' => 'Exito',
+            'exito' => 200
+        ];
+        return response()->json($data);
+    }
+
+    public function Filtrar($tipo, $valor)
+    {
+        $query = Horarioatencion::select('horarioatencion.id',
+                'horarioatencion.Nombre',
+                'horarioatencion.HoraInicio',
+                'horarioatencion.HoraFin',
+                'horarioatencion.HoraInicioReceso',
+                'horarioatencion.HoraFinReceso');
+
+        if ($tipo == 0) {
+            $query->where('Nombre', 'like', '%' . strtoupper($valor) . '%');
+        } elseif ($tipo == 1) {
+            $query->where('HoraInicio',  'like', '%' . strtoupper($valor) . '%');
+        } elseif ($tipo == 2) {
+            $query->where('HoraFin',  'like', '%' . strtoupper($valor) . '%');
+        } elseif ($tipo == 3) {
+            $query->where('HoraInicioReceso', 'like', '%' . strtoupper($valor) . '%');
+        } elseif ($tipo == 4) {
+            $query->where('HoraFinReceso',  'like', '%' . strtoupper($valor) . '%');
+        } else {
+            $data = [
+                'data' => [],
+                'exito' => 400,
+                'mensaje' => 'Tipo no válido'
+            ];
+            return response()->json($data);
+        }
+
+        $result = $query->orderBy('id')
+            ->take(100)
+            ->get();
+
+        $data = [
+            'data' => $result,
+            'exito' => 200
+        ];
+
+        return response()->json($data);
+    }
     
     public function Agregar(Request $request)
     {
@@ -71,14 +134,14 @@ class HorarioatencionController
         if (!$horarioatencion) {
             $data = [
                 'message' => 'Horario no encontrado',
-                'status' => 404
+                'exito' => 404
             ];
             return response()->json($data, 404);
         }
 
         $data = [
             'horarioatencion' => $horarioatencion,
-            'status' => 200
+            'exito' => 200
         ];
 
         return response()->json($data, 200);
@@ -91,7 +154,7 @@ class HorarioatencionController
         if (!$horarioatencion) {
             $data = [
                 'message' => 'Horario de atención no encontrado',
-                'status' => 404
+                'exito' => 404
             ];
             return response()->json($data, 404);
         }
@@ -99,22 +162,22 @@ class HorarioatencionController
         $horarioatencion->delete();
 
         $data = [
-            'message' => 'Horario de atención eliminada',
-            'status' => 200
+            'message' => 'Horario de atención eliminado',
+            'exito' => 200
         ];
 
         return response()->json($data, 200);
     }
 
 
-    public function Editar(Request $request, $id)
+    public function Editar(Request $request)
     {
-        $horarioatencion = Horarioatencion::find($id);
+        $horarioatencion = Horarioatencion::find($request->id);
 
         if (!$horarioatencion) {
             $data = [
                 'message' => 'Horario de atención no encontrado',
-                'status' => 404
+                'exito' => 404
             ];
             return response()->json($data, 404);
         }

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Database\Factories;
 use App\Models\Medico;
 use App\Models\Persona;
@@ -12,9 +11,12 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class MedicoFactory extends Factory
 {
-    protected $model = Medico::class;
-
-    public function definition()
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
     {
         return [
             'Especialidad' => $this->faker->randomElement(['Cardiología', 'Dermatología', 'Neurología', 'Pediatría', 'Oftalmología']),
@@ -22,6 +24,7 @@ class MedicoFactory extends Factory
             'NumeroCarnet' => $this->faker->unique()->numerify('CARNET######'),
             'persona_id' => Persona::factory(),
             'consultorio_id' => Consultorio::factory(),
+            'Estado' => $this->faker->randomElement(['Activo', 'Inactivo']),
         ];
     }
 }

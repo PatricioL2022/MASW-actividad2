@@ -1,0 +1,20 @@
+
+.Bienvenido {
+    font-weight: bold;
+    font-family: monospace;
+    font-size: 50px;
+    display: inline-grid;
+  }
+  .Bienvenido:before,
+  .Bienvenido:after {
+    content:"Bienvenido";
+    grid-area: 1/1;
+    mask:linear-gradient(90deg,#000 50%,#0000 0) 0 50%/2ch 100%;
+    animation: l11 2s infinite cubic-bezier(0,20,0,-20);
+  }
+  .Bienvenido:after {
+    mask-position:1ch 50%;
+    --s:-1;
+  }
+  @keyframes l11 {100%{transform: translateY(calc(var(--s,1)*0.1%));}}
+  
