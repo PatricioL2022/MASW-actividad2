@@ -35,6 +35,12 @@ export class PersonasComponent implements OnInit {
   }
   ngOnInit(): void {
     this.ListarElementos();
+    this.checkLocal();
+  }
+  checkLocal() {
+    if (!localStorage.getItem('usuario') || !localStorage.getItem('rol')) {
+      this.OperacionesM.Logout();
+    }
   }
   NombrePagina: string = 'Personas';
   TituloFormulario: string = '';

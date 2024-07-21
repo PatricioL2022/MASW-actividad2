@@ -15,11 +15,11 @@
     margin: 0 auto;
 }
 .card-header{
-    background-color: var(--color-formulario-primario);
+    background-color: var(--color-tabalas-primario);
 }
 .card-body{
-    background-color: var(--color-formulario-secundario);
+    background-color: var(--color-tabalas-secundario);
 }
 .card-footer{
-    background-color: var(--color-formulario-terciario);
+    background-color: var(--color-tabalas-terciario);
 }

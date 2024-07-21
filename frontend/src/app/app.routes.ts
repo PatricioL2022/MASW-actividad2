@@ -5,9 +5,11 @@ import { InicioComponent } from './Componentes/inicio/inicio.component';
 import { ConsultoriosComponent } from './Componentes/consultorios/consultorios.component';
 import { MedicosComponent } from './Componentes/medicos/medicos.component';
 import { PacientesComponent } from './Componentes/pacientes/pacientes.component';
+import { LoginComponent } from './Login/login/login.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'inicio', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent },
   { path: 'inicio', component: InicioComponent },
   { path: 'personas', component: PersonasComponent },
   { path: 'consultorios', component: ConsultoriosComponent },

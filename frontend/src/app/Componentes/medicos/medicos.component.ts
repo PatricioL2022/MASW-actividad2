@@ -32,18 +32,25 @@ export class MedicosComponent implements OnInit {
       );
     });
   }
+  
   ngOnInit(): void {
     this.ListarElementos();
-  } 
+    this.checkLocal();
+  }
+  checkLocal() {
+    if (!localStorage.getItem('usuario') || !localStorage.getItem('rol')) {
+      this.OperacionesM.Logout();
+    }
+  }
   NombrePagina: string = 'Medico';
   TituloFormulario: string = '';
   ParametrosDeBusqueda: Array<string> = [
     '',
     'Ruc',
-    'Nombre Completo',
-    'Nombre Comercial Completo',
-    'Nombre Incompleto',
-    'Nombre Comercial Incompleto',
+    'Nombres Completos',
+    'Apellidos Completos',
+    'Nombres Incompletos',
+    'Apellidos Incompletos',
     'Estado',
   ];
   ParametrosEstado: any[] = [
@@ -109,19 +116,19 @@ export class MedicosComponent implements OnInit {
       tipo = 1;
       this.GetFiltrarElemento(valor, tipo);
     }
-    if (this.itemBusqueda.value === 'Nombre Completo') {
+    if (this.itemBusqueda.value === 'Nombres Completos') {
       tipo = 2;
       this.GetFiltrarElemento(valor, tipo);
     }
-    if (this.itemBusqueda.value === 'Nombre Incompleto') {
+    if (this.itemBusqueda.value === 'Nombres Incompletos') {
       tipo = 3;
       this.GetFiltrarElemento(valor, tipo);
     }
-    if (this.itemBusqueda.value === 'Nombre Comercial Completo') {
+    if (this.itemBusqueda.value === 'Apellidos Completos') {
       tipo = 4;
       this.GetFiltrarElemento(valor, tipo);
     }
-    if (this.itemBusqueda.value === 'Nombre Comercial Incompleto') {
+    if (this.itemBusqueda.value === 'Apellidos Incompletos') {
       tipo = 5;
       this.GetFiltrarElemento(valor, tipo);
     }
@@ -153,196 +160,80 @@ export class MedicosComponent implements OnInit {
   EncerarComponentes() {
     this.TituloFormulario = '';
     this.resetForm();
+    this.Persona = '';
+    this.Consultorio = '';
   }
 
   ElementoForm!: FormGroup;
   formControls = [
     {
-      tipo: 'combobox',
-      name: 'TipoIdentificacion',
-      label: 'Tipo Identificación',
-
+      tipo: 'text',
+      tipovalue: 'Text',
+      name: 'Especialidad',
+      label: 'Especialidad',
       longitudMin: 1,
-      longitudMax: 12,
+      longitudMax: 100,
       validators: [
         Validators.required,
-        this.validar.validarLongitudMinMax(1, 12),
-      ],
-      optionList: [{ value: 'CI' }, { value: 'PAS' }, { value: 'RUC' }],
-    },
-    {
-      tipo: 'number',
-      name: 'Identificacion',
-      label: 'Identificacion',
-      longitudMin: 7,
-      longitudMax: 13,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(7, 13),
-        this.validar.VFN_SoloNumeros(),
+        this.validar.validarLongitudMinMax(1, 100),
+        this.validar.VFN_SoloLetras(),
       ],
     },
     {
       tipo: 'text',
-      name: 'Nombres',
-      label: 'Nombres',
+      tipovalue: 'Text',
+      name: 'Subespecialidad',
+      label: 'Subespecialidad',
       longitudMin: 1,
-      longitudMax: 120,
+      longitudMax: 100,
       validators: [
         Validators.required,
-        this.validar.validarLongitudMinMax(1, 120),
-        this.validar.VFN_AlfaNumerico(),
+        this.validar.validarLongitudMinMax(1, 100),
+        this.validar.VFN_SoloLetras(),
       ],
     },
     {
       tipo: 'text',
-      name: 'Apellidos',
-      label: 'Apellidos',
-
-      longitudMin: 1,
-      longitudMax: 120,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(1, 120),
-        this.validar.VFN_AlfaNumerico(),
-      ],
-    },
-    {
-      tipo: 'combobox',
-      name: 'Genero',
-      label: 'Género',
-
-      longitudMin: 1,
-      longitudMax: 9,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(1, 9),
-      ],
-      optionList: [{ value: 'Masculino' }, { value: 'Femenino' }],
-    },
-    {
-      tipo: 'combobox',
-      name: 'GrupoSanguineo',
-      label: 'Grupo Sanguíneo',
-
-      longitudMin: 1,
-      longitudMax: 4,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(1, 4),
-      ],
-      optionList: [
-        { value: 'A+' },
-        { value: 'A-' },
-        { value: 'B+' },
-        { value: 'B-' },
-        { value: 'AB+' },
-        { value: 'AB-' },
-        { value: 'O+' },
-        { value: 'O-' },
-      ],
-    },
-    {
-      tipo: 'text',
-      name: 'Direccion',
-      label: 'Dirección',
-
-      longitudMin: 1,
-      longitudMax: 250,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(1, 250),
-        this.validar.VFN_AlfaNumerico(),
-      ],
-    },
-    {
-      tipo: 'number',
-      name: 'Telefono',
-      label: 'Teléfono',
-
-      longitudMin: 7,
-      longitudMax: 14,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(1, 14),
-        this.validar.VFN_SoloNumeros(),
-      ],
-    },
-    {
-      tipo: 'email',
-      name: 'Correo',
-      label: 'Correo',
-
-      longitudMin: 1,
-      longitudMax: 150,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(1, 150),
-        this.validar.VFN_Correo(),
-      ],
-    },
-    {
-      tipo: 'text',
-      name: 'Titulo',
-      label: 'Título',
-
+      tipovalue: 'number',
+      name: 'NumeroCarnet',
+      label: 'Numero de Carnet',
       longitudMin: 1,
       longitudMax: 15,
       validators: [
         Validators.required,
         this.validar.validarLongitudMinMax(1, 15),
-        this.validar.VFN_AlfaNumerico(),
-      ],
-    },
-    {
-      tipo: 'date',
-      name: 'FechaNacimiento',
-      label: 'Fecha de Nacimiento',
-
-      longitudMin: 8,
-      longitudMax: 10,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(8, 10),
+        this.validar.VFN_SoloNumeros(),
       ],
     },
     {
       tipo: 'text',
-      name: 'Foto',
-      label: 'Foto',
-
-      longitudMin: 1,
-      longitudMax: 300,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(1, 300),
-      ],
+      tipovalue: '',
+      name: 'persona_id',
+      label: 'Persona id',
+      validators: [Validators.required, this.validar.VFN_SoloNumeros()],
+    },
+    {
+      tipo: 'text',
+      tipovalue: '',
+      name: 'consultorio_id',
+      label: 'Consultorio id',
+      validators: [Validators.required, this.validar.VFN_SoloNumeros()],
     },
     {
       tipo: 'checkbox',
+      tipovalue: 'checkbox',
       name: 'Estado',
       label: 'Estado',
-
-      longitudMin: 1,
-      longitudMax: 12,
-      validators: [],
       value: true,
     },
   ];
   resetForm() {
     this.ElementoForm.reset({
-      TipoIdentificacion: '',
-      Identificacion: '',
-      Nombres: '',
-      Apellidos: '',
-      Genero: '',
-      GrupoSanguineo: '',
-      Direccion: '',
-      Telefono: '',
-      Correo: '',
-      Titulo: '',
-      FechaNacimiento: '',
-      Foto: '',
+      Especialidad: '',
+      Subespecialidad: '',
+      NumeroCarnet: '',
+      persona_id: '',
+      consultorio_id: '',
       Estado: false,
     });
     this.ElementoForm.removeControl('id');
@@ -375,22 +266,59 @@ export class MedicosComponent implements OnInit {
     this.ElementoForm.addControl('id', new FormControl());
     this.ElementoForm.reset({
       id: datos.id,
-      TipoIdentificacion: datos.TipoIdentificacion,
-      Identificacion: datos.Identificacion,
-      Nombres: datos.Nombres,
-      Apellidos: datos.Apellidos,
-      Genero: datos.Genero,
-      GrupoSanguineo: datos.GrupoSanguineo,
-      Direccion: datos.Direccion,
-      Telefono: datos.Telefono,
-      Correo: datos.Correo,
-      Titulo: datos.Titulo,
-      FechaNacimiento: datos.FechaNacimiento,
-      Foto: datos.Foto,
+      Especialidad: datos.Especialidad,
+      Subespecialidad: datos.Subespecialidad,
+      NumeroCarnet: datos.NumeroCarnet,
+      persona_id: datos.persona_id,
+      consultorio_id: datos.consultorio_id,
       Estado: datos.Estado == 'Activo' ? true : false,
     });
+    
+    this.Persona = datos.Nombres + ' ' + datos.Apellidos;
+    this.Consultorio = datos.Nombre;
     this.AgregarEditarElemento(tipo);
   }
+  // ****************************************** EXTRAS *****************************************************************
+  BuscarCliente(reciv: any) {
+    let recivido = reciv.target.value.trim();
+    this.Persona = '';
+    this.ElementoForm.patchValue({ persona_id: '' });
+    if (recivido.length > 0) {
+      this.OperacionesM.FiltrarElementos('PersonasFiltro/', 1, recivido)
+        .pipe(
+          map((datos) => {
+            let person = datos[0];
+            if (datos.length != 0) {
+              this.ElementoForm.addControl('persona_id', new FormControl());
+              this.ElementoForm.patchValue({ persona_id: person.id });
+              this.Persona = person.Nombres + ' ' + person.Apellidos;
+            }
+          })
+        )
+        .subscribe();
+    }
+  }
+  Persona: string = '';
+  BuscarConsultorio(reciv: any) {
+    let recivido = reciv.target.value.trim();
+    this.Consultorio = '';
+    this.ElementoForm.patchValue({ consultorio_id: '' });
+    if (recivido.length > 0) {
+      this.OperacionesM.FiltrarElementos('ConsultoriosFiltro/', 6, recivido)
+        .pipe(
+          map((datos) => {
+            let consultorio = datos[0];
+            if (datos.length != 0) {
+              this.ElementoForm.patchValue({ consultorio_id: consultorio.id });
+              this.Consultorio = consultorio.Nombre;
+            }
+          })
+        )
+        .subscribe();
+    }
+  }
+  Consultorio: string = '';
+
   // ****************************************** PAGINACION *****************************************************************
 
   ActualizaEstado(elemento: any) {

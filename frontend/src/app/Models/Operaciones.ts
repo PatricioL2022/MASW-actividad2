@@ -5,6 +5,11 @@ import { ApiService } from '../servicios/api.service';
 import { Alertas } from '../Control/Alerts';
 import { Fechas } from '../Control/Fechas';
 import { HttpErrorResponse } from '@angular/common/http';
+import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
+import { HeaderComponent } from '../Plantillas/header/header.component';
+import { SidebarComponent } from '../Plantillas/sidebar/sidebar.component';
+import { FooterComponent } from '../Plantillas/footer/footer.component';
 
 @Injectable({
   providedIn: 'root',
@@ -13,11 +18,15 @@ export class Operaciones {
   constructor(
     private api: ApiService,
     private alerta: Alertas,
-    public fechas: Fechas
-  ) {}
+    public fechas: Fechas,
+    private router: Router
+  ) // private header: HeaderComponent,
+  // private sider: SidebarComponent,
+  // private footer: FooterComponent
+  {}
 
-  ListarElementos(entidad:string,fraccion: number, rango: number) {
-    return this.api.Get(entidad,fraccion, rango).pipe(
+  ListarElementos(entidad: string, fraccion: number, rango: number) {
+    return this.api.Get(entidad, fraccion, rango).pipe(
       map((tracks) => {
         let exito = tracks['exito'];
         let datos = tracks['data'];
@@ -42,8 +51,8 @@ export class Operaciones {
       })
     );
   }
-  FiltrarElementos(entidad:string, tipo: number, valor: string) {
-    return this.api.GetFiltro(entidad,tipo, valor).pipe(
+  FiltrarElementos(entidad: string, tipo: number, valor: string) {
+    return this.api.GetFiltro(entidad, tipo, valor).pipe(
       map((tracks) => {
         let exito = tracks['exito'];
         let datos = tracks['data'];
@@ -70,9 +79,9 @@ export class Operaciones {
     );
   }
 
-  GuardarElemento(entidad:string, elemento: any) {
+  GuardarElemento(entidad: string, elemento: any) {
     if (elemento.id != 0) {
-      return this.api.Put(entidad,elemento).pipe(
+      return this.api.Put(entidad, elemento).pipe(
         map((tracks) => {
           let exito = tracks['exito'];
           let mensaje = tracks['mensaje'];
@@ -101,7 +110,7 @@ export class Operaciones {
         })
       );
     } else {
-      return this.api.Post(entidad,elemento).pipe(
+      return this.api.Post(entidad, elemento).pipe(
         map((tracks) => {
           let exito = tracks['exito'];
           let mensaje = tracks['mensaje'];
@@ -109,8 +118,7 @@ export class Operaciones {
 
           if (exito == '200' || exito == '201') {
             return exito;
-          }
-          if (exito == '400') {
+          } else if (exito == '400') {
             let dat = Object.entries(datos)
               .map(([clave, valor]) => {
                 if (Array.isArray(valor)) {
@@ -131,7 +139,7 @@ export class Operaciones {
       );
     }
   }
-  EditarParcialElemento(entidad:string,elemento: any) {
+  EditarParcialElemento(entidad: string, elemento: any) {
     return this.api.EditarParcial(entidad, elemento).pipe(
       map((tracks) => {
         let exito = tracks['exito'];
@@ -161,7 +169,7 @@ export class Operaciones {
       })
     );
   }
-  EliminarElemento(entidad:string, id: number) {
+  EliminarElemento(entidad: string, id: number) {
     return this.api.Delete(entidad, id).pipe(
       map((tracks) => {
         let exito = tracks['exito'];
@@ -181,4 +189,49 @@ export class Operaciones {
       })
     );
   }
+
+  Login(elemento: any) {
+    return this.api.Post('Login', elemento).pipe(
+      map((tracks) => {
+        let exito = tracks['exito'];
+        let mensaje = tracks['mensaje'];
+        let datos = tracks['data'];
+        console.log(datos);
+        if (exito == '201' || exito == '200') {
+          localStorage.setItem(
+            'usuario',
+            datos.Nombres + ' ' + datos.Apellidos
+          );
+          localStorage.setItem('rol', datos.descripcion);
+          this.alerta.SesionIniciada();
+          return exito;
+        }
+        if (exito == '400') {
+          let dat = Object.entries(datos)
+            .map(([clave, valor]) => {
+              if (Array.isArray(valor)) {
+                return `${clave}: ${valor.join(', ')}`;
+              } else {
+                return `${clave}: ${valor}`;
+              }
+            })
+            .join('\n');
+          return this.alerta.ErrorEnVariablesRequeridas(mensaje, dat);
+        } else {
+          return this.alerta.ErrorEnLaPeticion(mensaje);
+        }
+      }),
+      catchError((error) => {
+        throw this.alerta.ErrorEnLaPeticion(error.mensaje);
+      })
+    );
+  }
+
+  Logout() {
+    localStorage.removeItem('usuario');
+    localStorage.removeItem('rol');
+    this.router.navigate(['login']);
+    this.alerta.SesionCerrada('Sesión Cerrada');
+  }
+
 }

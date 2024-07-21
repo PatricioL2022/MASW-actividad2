@@ -8,9 +8,12 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\API\PersonController;
 use App\Http\Controllers\API\ConsultorioController;
+use App\Http\Controllers\API\LoginController;
 use App\Http\Controllers\API\PersonaController;
 use App\Http\Controllers\API\MedicoController;
 use App\Http\Controllers\API\PacienteController;
+
+Route::post('/Login', [LoginController::class, 'Agregar']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -26,7 +29,8 @@ Route::prefix('v1/persons')->group(function () {
 });
 
 
-Route::get('/Consultorios/{codigo},{rango}', [ConsultorioController::class, 'ListarConsultorios']);
+Route::get('/Consultorios', [ConsultorioController::class, 'ListarConsultorios']);
+Route::get('/Consultorios/{codigo},{rango}', [ConsultorioController::class, 'ListarConsultoriosPag']);
 Route::get('/Consultorios/{id}', [ConsultorioController::class, 'BuscarId']);
 Route::get('/ConsultoriosFiltro/{tipo},{valor}', [ConsultorioController::class, 'Filtrar']);
 Route::post('/Consultorios', [ConsultorioController::class, 'Agregar']);

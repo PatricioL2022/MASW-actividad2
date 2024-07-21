@@ -150,5 +150,31 @@ export class Alertas {
 
   
 
+  SesionIniciada() {
+    const alerta = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 1500,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer);
+        toast.addEventListener('mouseleave', Swal.resumeTimer);
+      },
+    });
 
+    alerta.fire({
+      icon: 'success',
+      title: 'Se inicio sesión correctamente',
+    });
+  }
+  SesionCerrada(mensaje: string) {
+    Swal.fire({
+      position: 'top-end',
+      icon: 'success',
+      title: mensaje,
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  }
 }

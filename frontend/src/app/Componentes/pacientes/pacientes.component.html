@@ -277,22 +277,24 @@
               </div>
             </form>
           </div>
-          <div class="row">
-            <div class="col-md-4">
-              <div class="form-group">
-                <span><small>*</small>Cedula/Ruc/Pasaporte</span>
-                <input
-                  style="min-width: 250px"
-                  type="text"
-                  class="form-control"
-                  placeholder="Buscar Paciente ..."
-                  (keyup)="BuscarCliente($event)"
-                />
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <span><small>*</small>Cedula/Ruc/Pasaporte</span>
+                  <input
+                    style="min-width: 250px"
+                    type="text"
+                    class="form-control"
+                    placeholder="Buscar Paciente ..."
+                    (keyup)="BuscarCliente($event)"
+                  />
+                </div>
               </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label for="clinombres">Nombre:&nbsp;{{ Persona }}</label>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="clinombres">Nombre:&nbsp;{{ Persona }}</label>
+                </div>
               </div>
             </div>
           </div>
