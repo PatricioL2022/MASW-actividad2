@@ -3,7 +3,7 @@ export interface ResponseI {
   mensaje: string;
   data: any;
 }
-export interface PersonasI {
+export interface PersonaI {
   id: number;
   Identificacion: string;
   Nombres: string;
@@ -18,4 +18,26 @@ export interface PersonasI {
   Foto: string;
   GrupoSanguineo: string;
   Estado: string;
+}
+export interface ConsultorioI {
+Nombre: string;
+Ruc: string;
+NombreComercial: string;
+Direccion: string;
+Telefono: string;
+PorcentajeIva: string;
+Logo: string;
+Correo: string;
+DireccionMatriz: string;
+FechaIn: string;
+FechaUp: string;
+Estado: string;
+}
+export interface PersonasI {
+  id: number;
+  Especialidad: string;
+  Subespecialidad: string;
+  NumeroCarnet: string;
+  persona_id: string;
+  consultorio_id: string;
 }

@@ -11,6 +11,7 @@ class Paciente extends Model
     protected $table = 'paciente';
     protected $fillable = [
         'NumeroExpediente',
-        'IdPersona',
+        'Estado',
+        'persona_id',
     ];
 }

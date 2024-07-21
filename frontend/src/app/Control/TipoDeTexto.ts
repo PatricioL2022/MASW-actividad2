@@ -12,16 +12,32 @@ import {
 })
 export class TipoDeTexto {
   constructor() {}
+  
+  // mostrarErrores() {
+  //   Object.keys(this.ElementoForm.controls).forEach(key => {
+  //     const controlErrors = this.ElementoForm.get(key)?.errors;
+  //     if (controlErrors) {
+  //       console.log(`Errores en el campo ${key}:`, controlErrors);
+  //     }
+  //   });
+  // }
   ///////////////////////////////////////// VALIDAR CAMPOS DE ACUERDO AL TIPO  //////////////////////////////////////////////////////////
   V_ValidadorGeneral(tipo: string, valor: any): boolean {
+
     switch (tipo) {
       case 'number':
         return this.V_SoloNumeros(valor);
-        break;
-      case 'text':
+      case 'NumFija':
+        return this.V_SoloNumeros(valor);
+      case 'numberDes':
+        return this.V_NumerosDesimales(valor);
+      case 'Text':
+        return this.V_SoloLetras(valor);
+      case 'TextAlfa':
         return this.V_AlfaNumerico(valor);
-        break;
-        case 'textNoNull':
+      case 'TextCar':
+        return true;
+      case 'textNoNull':
         return this.V_AlfaNumericoNoNulo(valor);
         break;
       case 'email':
@@ -34,7 +50,7 @@ export class TipoDeTexto {
 
   ///////////////////////////////////////// VALIDAR ALFA NUMERICO  //////////////////////////////////////////////////////////
   V_AlfaNumericoNoNulo(parametro: string) {
-    var parm = parametro.trim()
+    var parm = parametro.trim();
     let resultado = false;
     if (parm.length == 0) {
       return false;
@@ -44,7 +60,6 @@ export class TipoDeTexto {
       if (!caracterActual.match(/^[0-9a-zñA-ZÑ\s]*$/)) {
         return false;
       }
-      
     }
     return true;
   }
@@ -53,13 +68,13 @@ export class TipoDeTexto {
     let resultado = false;
     for (let i = 0; i < parametro.length; i++) {
       let caracterActual = parametro[i];
-      if (!caracterActual.match(/^[0-9a-zñA-ZÑ\s]*$/)) {
+      if (!caracterActual.match(/^[0-9a-zñáéíóúA-ZÑÁÉÍÓÚ\s]*$/)) {
         return false;
       }
-      
     }
     return true;
   }
+  
   VFN_AlfaNumerico(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control.value;
@@ -85,7 +100,7 @@ export class TipoDeTexto {
     let resultado = false;
     for (let i = 0; i < parametro.length; i++) {
       let caracterActual = parametro[i];
-      if (!caracterActual.match(/^[a-zñA-ZÑ\s]*$/)) {
+      if (!caracterActual.match(/^[a-zñáéíóúA-ZÑÁÉÍÓÚ\s]*$/)) {
         return false;
       }
     }
@@ -185,40 +200,12 @@ export class TipoDeTexto {
   }
 
   ///////////////////////////////////////// VALIDAR FORMATO CORREO  //////////////////////////////////////////////////////////
-  V_Correo(correo: string) {
-    if (
-      correo.includes('@') &&
-      correo.endsWith(
-        '.com' ||
-          '.ec' ||
-          '.co' ||
-          'com' ||
-          'org' ||
-          'net' ||
-          'edu' ||
-          'gov' ||
-          'mil' ||
-          'ec' ||
-          'co' ||
-          'es' ||
-          'mx' ||
-          'ar' ||
-          'cl' ||
-          'br' ||
-          'info' ||
-          'biz' ||
-          'name' ||
-          'pro' ||
-          'xyz'
-      )
-    ) {
-      let partes = correo.split('@');
-      if (partes.length === 2 && partes[1].split('.').length === 2) {
-        return true;
-      }
-    }
-    return false;
+
+  V_Correo(correo: string): boolean {
+    const regex = /^[^\s@]+@[^\s@]+\.(com|ec|co|org|net|edu|gov|mil|es|mx|ar|cl|br|info|biz|name|pro|xyz)$/;
+    return regex.test(correo);
   }
+  
   VFN_Correo(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control.value;
@@ -285,5 +272,4 @@ export class TipoDeTexto {
       }
     };
   }
-
 }

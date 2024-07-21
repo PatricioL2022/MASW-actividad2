@@ -18,32 +18,107 @@ class PersonaController
         ];
         return response()->json($data, 200);
     }
+    public function ListarPersonasPag($codigo, $rango)
+    {
+        $q = Persona::where('Estado', 'Activo')
+            ->orderBy('id', 'desc')
+            ->skip($codigo)
+            ->take($rango == 0 ? 1000 : $rango)
+            ->get();
+        $data = [
+            'data' => $q,
+            'mensaje' => 'Exito',
+            'exito' => 200
+        ];
+        return response()->json($data, 200);
+    }
+    public function Filtrar($tipo, $valor)
+    {
+        $query = Persona::query();
+
+        if ($tipo == 0) {
+            $query->where('Estado', $valor);
+        } elseif ($tipo == 1) {
+            $query->where('Identificacion', strtoupper($valor))
+                ->where('Estado', 'Activo');
+        } elseif ($tipo == 2) {
+            $query->where('Nombres', strtoupper($valor))
+                ->where('Estado', 'Activo');
+        } elseif ($tipo == 3) {
+            $query->where('Nombres', 'like', '%' . strtoupper($valor) . '%')
+                ->where('Estado', 'Activo');
+        } elseif ($tipo == 4) {
+            $query->where('Apellidos', strtoupper($valor))
+                ->where('Estado', 'Activo');
+        } elseif ($tipo == 5) {
+            $query->where('Apellidos', 'like', '%' . strtoupper($valor) . '%')
+                ->where('Estado', 'Activo');
+        } else {
+            $data = [
+                'data' => [],
+                'exito' => 400,
+                'mensaje' => 'Tipo no válido'
+            ];
+            return response()->json($data);
+        }
+
+        $result = $query->orderBy('id')
+            ->take(100)
+            ->get();
+
+        $data = [
+            'data' => $result,
+            'exito' => 200
+        ];
+
+        return response()->json($data);
+    }
+    public function BuscarId($id)
+    {
+        $persona = Persona::find($id);
+
+        if (!$persona) {
+            $data = [
+                'mensaje' => 'Persona no encontrado',
+                'exito' => 404
+            ];
+            return response()->json($data);
+        }
+
+        $data = [
+            'persona' => $persona,
+            'exito' => 200
+        ];
+
+        return response()->json($data);
+    }
     public function Agregar(Request $request)
     {
-        // $validator = Validator::make($request->all(), [
-        //     'TipoIdentificacion' => 'requiered',
-        //     'Identificacion' => 'requiered',
-        //     'Nombres' => 'requiered',
-        //     'Apellidos' => 'requiered',
-        //     'Genero' => 'requiered',
-        //     'GrupoSanguineo' => 'requiered',
-        //     'Direccion' => 'requiered',
-        //     'Telefono' => 'requiered',
-        //     'Correo' => 'requiered|email',
-        //     'Titulo' => 'requiered',
-        //     'FechaNacimiento' => 'requiered',
-        //     'Foto' => 'requiered',
-        //     'Estado' => 'requiered'
-        // ]);
+        $validator = Validator::make($request->all(), [
+            'Identificacion' => 'required|string|max:13|unique:persona,Identificacion',
+            'Nombres' => 'required|string|max:120',
+            'Apellidos' => 'required|string|max:120',
+            'TipoIdentificacion' => 'required|in:CI,PAS,RUC',
+            'Genero' => 'required|in:Masculino,Femenino',
+            'Direccion' => 'nullable|string|max:250',
+            'Telefono' => 'nullable|string|max:14',
+            'Correo' => 'required|string|email|max:150',
+            'Titulo' => 'required|string|max:15',
+            'FechaNacimiento' => 'required|date',
+            'Foto' => 'nullable|string|max:300',
+            'GrupoSanguineo' => 'nullable|string|max:4',
+            'Estado' => 'required|in:Activo,Inactivo',
+        ]);
 
-        // if ($validator->fails()) {
-        //     $data = [
-        //         'data' =>  $validator->errors(),
-        //         'message' => 'Error en la validación de los datos',
-        //         'exito' => 400
-        //     ];
-        //     return response()->json($data, 400);
-        // }
+
+        if ($validator->fails()) {
+            $data = [
+                'data' =>  $validator->errors(),
+                'mensaje' => 'Error en la validación de los datos',
+                'exito' => 400
+            ];
+            return response()->json($data);
+        }
 
         $persona = Persona::create([
             'Identificacion' => $request->Identificacion,
@@ -64,95 +139,55 @@ class PersonaController
         if (!$persona) {
             $data = [
                 'data' =>  '',
-                'message' => 'Error al crear el persona',
+                'mensaje' => 'Error al crear el persona',
                 'exito' => 500
             ];
-            return response()->json($data, 500);
+            return response()->json($data);
         }
 
         $data = [
             'data' =>  $persona,
-            'message' => '',
+            'mensaje' => '',
             'exito' => 201
         ];
 
-        return response()->json($data, 201);
+        return response()->json($data);
     }
-    public function BuscarId($id)
+    public function Editar(Request $request)
     {
-        $persona = Persona::find($id);
+        $persona = persona::find($request->id);
 
         if (!$persona) {
             $data = [
-                'message' => 'Persona no encontrado',
-                'status' => 404
+                'mensaje' => 'Persona no encontrado',
+                'exito' => 404
             ];
-            return response()->json($data, 404);
-        }
-
-        $data = [
-            'persona' => $persona,
-            'status' => 200
-        ];
-
-        return response()->json($data, 200);
-    }
-    public function Eliminar($id)
-    {
-        $persona = Persona::find($id);
-
-        if (!$persona) {
-            $data = [
-                'message' => 'Persona no encontrado',
-                'status' => 404
-            ];
-            return response()->json($data, 404);
-        }
-
-        $persona->delete();
-
-        $data = [
-            'message' => 'Persona eliminada',
-            'status' => 200
-        ];
-
-        return response()->json($data, 200);
-    }
-    public function Editar(Request $request, $id)
-    {
-        $persona = persona::find($id);
-
-        if (!$persona) {
-            $data = [
-                'message' => 'Persona no encontrado',
-                'status' => 404
-            ];
-            return response()->json($data, 404);
+            return response()->json($data);
         }
 
         $validator = Validator::make($request->all(), [
-            'TipoIdentificacion' => 'requiered',
-            'Identificacion' => 'requiered',
-            'Nombres' => 'requiered',
-            'Apellidos' => 'requiered',
-            'Genero' => 'requiered',
-            'GrupoSanguineo' => 'requiered',
-            'Direccion' => 'requiered',
-            'Telefono' => 'requiered',
-            'Correo' => 'requiered|email',
-            'Titulo' => 'requiered',
-            'FechaNacimiento' => 'requiered',
-            'Foto' => 'requiered',
-            'Estado' => 'requiered',
+            'Identificacion' => 'required|string|max:13|unique:persona',
+            'Nombres' => 'required|string|max:120',
+            'Apellidos' => 'required|string|max:120',
+            'TipoIdentificacion' => 'required|in:CI,PAS,RUC',
+            'Genero' => 'required|in:Masculino,Femenino',
+            'Direccion' => 'nullable|string|max:250',
+            'Telefono' => 'nullable|string|max:14',
+            'Correo' => 'required|string|email|max:150',
+            'Titulo' => 'required|string|max:15',
+            'FechaNacimiento' => 'required|date',
+            'Foto' => 'nullable|string|max:300',
+            'GrupoSanguineo' => 'nullable|string|max:4',
+            'Estado' => 'required|in:Activo,Inactivo',
         ]);
 
         if ($validator->fails()) {
             $data = [
                 'data' =>  $validator->errors(),
-                'message' => 'Error en la validación de los datos',
+                'mensaje' => 'Error en la validación de los datos',
                 'exito' => 400
             ];
-            return response()->json($data, 400);
+            return response()->json($data);
         }
 
         $persona->Identificacion = $request->Identificacion;
@@ -173,48 +208,48 @@ class PersonaController
 
         $data = [
             'data' =>  $persona,
-            'message' => 'Persona actualizado',
+            'mensaje' => 'Persona actualizado',
             'exito' => 200
         ];
 
-        return response()->json($data, 200);
+        return response()->json($data);
     }
-    public function EditarParcial(Request $request, $id)
+    public function EditarParcial(Request $request)
     {
-        $persona = persona::find($id);
+        $persona = persona::find($request->id);
 
         if (!$persona) {
             $data = [
                 'data' =>  '',
-                'message' => 'Persona no encontrado',
+                'mensaje' => 'Persona no encontrado',
                 'exito' => 404
             ];
-            return response()->json($data, 404);
+            return response()->json($data);
         }
 
         $validator = Validator::make($request->all(), [
-            'TipoIdentificacion' => 'max150',
-            'Identificacion' => 'max150',
-            'Nombres' => 'max150',
-            'Apellidos' => 'max150',
-            'Genero' => 'max150',
-            'GrupoSanguineo' => 'max150',
-            'Direccion' => 'max150',
-            'Telefono' => 'max150',
-            'Correo' => 'max150',
-            'Titulo' => 'max150',
-            'FechaNacimiento' => 'max150',
-            'Foto' => 'max150',
-            'Estado' => 'max150',
+            'Identificacion' => 'string|max:13|unique:personas,Identificacion',
+            'Nombres' => 'string|max:120',
+            'Apellidos' => 'string|max:120',
+            'TipoIdentificacion' => 'in:CI,PAS,RUC',
+            'Genero' => 'in:Masculino,Femenino',
+            'Direccion' => 'string|max:250',
+            'Telefono' => 'string|max:14',
+            'Correo' => 'string|email|max:150',
+            'Titulo' => 'string|max:15',
+            'FechaNacimiento' => 'date',
+            'Foto' => 'string|max:300',
+            'GrupoSanguineo' => 'string|max:4',
+            'Estado' => 'in:Activo,Inactivo',
         ]);
 
         if ($validator->fails()) {
             $data = [
-                'message' => 'Error en la validación de los datos',
+                'mensaje' => 'Error en la validación de los datos',
                 'errors' => $validator->errors(),
-                'status' => 400
+                'exito' => 400
             ];
-            return response()->json($data, 400);
+            return response()->json($data);
         }
 
         if ($request->has('Identificacion')) {
@@ -260,11 +295,47 @@ class PersonaController
         $persona->save();
 
         $data = [
-            'message' => 'Estudiante actualizado',
+            'mensaje' => 'Persona actualizada',
             'persona' => $persona,
-            'status' => 200
+            'exito' => 200
         ];
 
-        return response()->json($data, 200);
+        return response()->json($data);
     }
+    public function Eliminar($id)
+    {
+        $persona = Persona::find($id);
+
+        if (!$persona) {
+            $data = [
+                'mensaje' => 'Persona no encontrada',
+                'exito' => 404
+            ];
+            return response()->json($data);
+        }
+
+        try {
+            $persona->delete();
+            $data = [
+                'mensaje' => 'Persona eliminada',
+                'exito' => 200
+            ];
+        } catch (\Exception $e) {
+            if (strpos($e->getMessage(), 'constraint violation') !== false) {
+                $data = [
+                    'mensaje' => 'Primary key en uso en otra entidad',
+                    'exito' => 400
+                ];
+            } else {
+                $data = [
+                    'mensaje' => 'Error al eliminar la persona: ' . $e->getMessage(),
+                    'exito' => 500
+                ];
+            }
+        }
+
+        return response()->json($data);
+    }
+
+
 }

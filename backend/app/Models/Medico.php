@@ -15,6 +15,7 @@ class Medico extends Model
         'NumeroCarnet',
         'persona_id',
         'consultorio_id',
+        'Estado',
     ];
     public function persona() {
         return $this->belongsTo(Persona::class, 'persona_id');

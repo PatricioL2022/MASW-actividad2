@@ -20,8 +20,6 @@ class Consultorio extends Model
         'Logo',
         'Correo',
         'DireccionMatriz',
-        'FechaIn',
-        'FechaUp',
         'Estado',
     ];
 }
