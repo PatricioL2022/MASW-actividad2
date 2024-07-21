@@ -166,7 +166,7 @@ class PersonaController
         }
 
         $validator = Validator::make($request->all(), [
-            'Identificacion' => 'required|string|max:13|unique:persona',
+            'Identificacion' => 'required|string|max:13',
             'Nombres' => 'required|string|max:120',
             'Apellidos' => 'required|string|max:120',
             'TipoIdentificacion' => 'required|in:CI,PAS,RUC',
@@ -228,7 +228,7 @@ class PersonaController
         }
 
         $validator = Validator::make($request->all(), [
-            'Identificacion' => 'string|max:13|unique:personas,Identificacion',
+            'Identificacion' => 'string|max:13',
             'Nombres' => 'string|max:120',
             'Apellidos' => 'string|max:120',
             'TipoIdentificacion' => 'in:CI,PAS,RUC',

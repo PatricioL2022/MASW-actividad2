@@ -48,7 +48,7 @@ Route::delete('/Personas/{id}',[PersonaController::class, 'Eliminar']);
 
 
 Route::get('/Medicos', [MedicoController::class, 'ListarMedicos']);
-Route::get('/Medicos/Especialidad', [MedicoController::class, 'ListarMedicos']);
+Route::get('/Medicos/Especialidad', [MedicoController::class, 'ListarMedicosConEspecialidad']);
 Route::get('/Medicos/{codigo},{rango}', [MedicoController::class, 'ListarMedicosPag']);
 Route::get('/Medicos/{id}', [MedicoController::class, 'BuscarId']);
 Route::get('/MedicosFiltro/{tipo},{valor}', [MedicoController::class, 'Filtrar']);

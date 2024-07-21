@@ -11,10 +11,11 @@ import { TipoDeTexto } from '../../Control/TipoDeTexto';
 import { Alertas } from '../../Control/Alerts';
 import { map } from 'rxjs';
 
+import {RouterModule} from '@angular/router';
 @Component({
   selector: 'app-medicos',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule,RouterModule],
   templateUrl: './medicos.component.html',
   styleUrl: './medicos.component.css',
 })

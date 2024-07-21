@@ -159,7 +159,7 @@ class PacienteController
     public function Agregar(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'NumeroExpediente' => 'required|numeric|unique:paciente,NumeroExpediente',
+            'NumeroExpediente' => 'required|unique:paciente,NumeroExpediente',
             'Estado' => 'required|string',
             'persona_id' => 'required|numeric|unique:paciente,persona_id',
         ]);
@@ -209,7 +209,7 @@ class PacienteController
         }
 
         $validator = Validator::make($request->all(), [
-            'NumeroExpediente' => 'required|numeric',
+            'NumeroExpediente' => 'required|string',
             'Estado' => 'required|string',
             'persona_id' => 'required|numeric',
         ]);

@@ -62,11 +62,11 @@ export class CitaagendapacienteComponent {
         {
           if(result.exito==201)
           {
-            this.messageService.add({ severity: 'success', summary: 'Aviso', detail: 'Agregado correctamente' });
+            this.messageService.add({ severity: 'success', summary: 'Aviso', detail: 'Agendado correctamente' });
             this.mostrarHorarios();
           }
           else {
-            this.messageService.add({ severity: 'error', summary: 'Aviso', detail: 'Error al guardar la cita' });
+            this.messageService.add({ severity: 'error', summary: 'Aviso', detail: 'Error al agendar la cita' });
           }
         }
         });

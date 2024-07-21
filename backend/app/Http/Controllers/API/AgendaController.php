@@ -178,4 +178,5 @@ class AgendaController
         ];
         return response()->json($data, 200);
     }
+
 }

@@ -130,7 +130,7 @@ class MedicoController
 
         $result = $query->select(
             'medico.id',
-            'medico.NumeroExpediente',
+            'medico.NumeroCarnet',
             'medico.persona_id',
             'persona.Identificacion',
             'persona.Nombres',
@@ -162,7 +162,7 @@ class MedicoController
             'Especialidad' => 'required|max:100',
             'Subespecialidad' => 'required|max:100',
             'NumeroCarnet' => 'required|max:15',
-            'persona_id' => 'required|unique:medico,NumeroExpediente',
+            'persona_id' => 'required|unique:medico,NumeroCarnet',
             'consultorio_id' => 'required',
             'Estado' => 'required',
         ]);
@@ -306,7 +306,7 @@ class MedicoController
         $Medico->save();
 
         $data = [
-            'message' => 'Estudiante actualizado',
+            'message' => 'Medico actualizado',
             'Medico' => $Medico,
             'status' => 200
         ];
@@ -332,6 +332,21 @@ class MedicoController
             'status' => 200
         ];
 
+        return response()->json($data, 200);
+    }
+    public function ListarMedicosConEspecialidad()
+    {
+        $data = DB::table('medico')
+            ->join('persona', 'medico.persona_id', '=', 'persona.id')
+            ->select('persona.Nombres','persona.Apellidos','medico.id',
+                'medico.Especialidad','persona.Titulo','persona.Foto')
+            ->where('persona.Estado', '=', 'Activo')
+            ->get();
+        $data = [
+            'data' => $data,
+            'mensaje' => 'Exito',
+            'exito' => 200
+        ];
         return response()->json($data, 200);
     }
 }

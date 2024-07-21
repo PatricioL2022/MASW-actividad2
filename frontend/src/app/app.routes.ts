@@ -8,6 +8,7 @@ import { CitaagendapacienteComponent } from './Componentes/cita/citaagendapacien
 import { ConsultoriosComponent } from './Componentes/consultorios/consultorios.component';
 import { MedicosComponent } from './Componentes/medicos/medicos.component';
 import { PacientesComponent } from './Componentes/pacientes/pacientes.component';
+import { CitaagendamedicoComponent } from './Componentes/cita/citaagendamedico/citaagendamedico.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -16,6 +17,7 @@ export const routes: Routes = [
   { path: 'agenda/:medico_id', component: AgendaComponent },
   { path: 'cita/agenda', component: CitapacienteComponent},
   { path: 'cita/agenda/paciente/:medico_id/:medico_nombre', component: CitaagendapacienteComponent},
+  { path: 'cita/agenda/medico', component: CitaagendamedicoComponent},
   { path: 'consultorios', component: ConsultoriosComponent },
   { path: 'medicos', component: MedicosComponent },
   { path: 'pacientes', component: PacientesComponent },

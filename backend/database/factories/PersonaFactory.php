@@ -21,7 +21,7 @@ class PersonaFactory extends Factory
             'Direccion' => $this->faker->address,
             'Correo' => $this->faker->unique()->safeEmail,
             'GrupoSanguineo' => $this->faker->randomElement(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
-            'Titulo' => $this->faker->jobTitle,
+            'Titulo' => 'Dr.',
             'FechaNacimiento' => $this->faker->date(),
             'Foto' => $this->faker->imageUrl(100, 100, 'people'),
             'Estado' => $this->faker->randomElement(['Activo', 'Inactivo']),
