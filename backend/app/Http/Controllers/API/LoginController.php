@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class LoginController extends Controller
@@ -24,7 +25,7 @@ class LoginController extends Controller
             ];
             return response()->json($data);
         }
-
+        // $hashedPassword = Hash::make($request->Password);
         $usuario = Usuario::join('rol', 'usuario.rol_id', '=', 'rol.id')
             ->join('persona', 'usuario.persona_id', '=', 'persona.id')
             ->where('Usuario', $request->Usuario)

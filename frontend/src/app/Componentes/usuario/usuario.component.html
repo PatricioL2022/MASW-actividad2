@@ -129,7 +129,13 @@
                         </button>
                       </div>
                     </th>
-                    <td *ngFor="let header of headers">{{ datos[header] }}</td>
+                    <td *ngFor="let header of headers">
+                      @if (header != 'Password') {
+                        {{ datos[header] }}
+                      }@else {
+                        Password
+                      }
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -217,7 +223,7 @@
                     @for (control of formControls; track $index) {
                     <div class="col-md-4 col-12">
                       @if (control.name != 'persona_id' && control.name !=
-                      'consultorio_id'&& control.tipo != 'checkbox') {
+                      'rol_id'&& control.tipo != 'checkbox') {
                       <div class="form-group">
                         <span><small>*</small>{{ control.label }}</span>
                         <input
@@ -260,7 +266,7 @@
                         </section>
                       </div>
                       } @if (control.name == 'persona_id' || control.name ==
-                      'consultorio_id') {
+                      'rol_id') {
                       <div class="form-group">
                         <label for="clinombres"
                           >{{ control.label }}:&nbsp;{{
@@ -305,13 +311,13 @@
                   <div class="col-md-4">
                     <div class="form-group">
                       <span
-                        ><small>*</small>Cedula/Ruc/Pasaporte&nbsp;Medico</span
+                        ><small>*</small>Cedula/Ruc/Pasaporte&nbsp;Persona</span
                       >
                       <input
                         style="min-width: 250px"
                         type="text"
                         class="form-control"
-                        placeholder="Buscar Medico ..."
+                        placeholder="Buscar Persona ..."
                         (keyup)="BuscarCliente($event)"
                       />
                     </div>
@@ -327,20 +333,20 @@
                 <div class="row">
                   <div class="col-md-4">
                     <div class="form-group">
-                      <span><small>*</small>Ruc/Nombre&nbsp;Consultorio</span>
+                      <span><small>*</small>Descripcion&nbsp;de&nbsp;Rol</span>
                       <input
                         style="min-width: 250px"
                         type="text"
                         class="form-control"
-                        placeholder="Buscar Paciente ..."
-                        (keyup)="BuscarConsultorio($event)"
+                        placeholder="Buscar Rol ..."
+                        (keyup)="BuscarRol($event)"
                       />
                     </div>
                   </div>
                   <div class="col-md-4">
                     <div class="form-group">
                       <label for="clinombres"
-                        >Consultorio:&nbsp;{{ Consultorio }}</label
+                        >Rol de:&nbsp;{{ Rol }}</label
                       >
                     </div>
                   </div>

@@ -6,6 +6,8 @@ import { ConsultoriosComponent } from './Componentes/consultorios/consultorios.c
 import { MedicosComponent } from './Componentes/medicos/medicos.component';
 import { PacientesComponent } from './Componentes/pacientes/pacientes.component';
 import { LoginComponent } from './Login/login/login.component';
+import { RolComponent } from './Componentes/rol/rol.component';
+import { UsuarioComponent } from './Componentes/usuario/usuario.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -15,4 +17,6 @@ export const routes: Routes = [
   { path: 'consultorios', component: ConsultoriosComponent },
   { path: 'medicos', component: MedicosComponent },
   { path: 'pacientes', component: PacientesComponent },
+  { path: 'rol', component: RolComponent },
+  { path: 'usuario', component: UsuarioComponent },
 ];

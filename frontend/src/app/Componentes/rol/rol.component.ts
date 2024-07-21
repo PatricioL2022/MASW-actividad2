@@ -1,27 +1,22 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
 import { Operaciones } from '../../Models/Operaciones';
 import { TipoDeTexto } from '../../Control/TipoDeTexto';
 import { Alertas } from '../../Control/Alerts';
-import { map } from 'rxjs';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FooterComponent } from "../../Plantillas/footer/footer.component";
 import { HeaderComponent } from "../../Plantillas/header/header.component";
 import { SidebarComponent } from "../../Plantillas/sidebar/sidebar.component";
+import { map } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-medicos',
+  selector: 'app-rol',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FooterComponent, HeaderComponent, SidebarComponent],
-  templateUrl: './medicos.component.html',
-  styleUrl: './medicos.component.css',
+  imports: [CommonModule, ReactiveFormsModule,FooterComponent, HeaderComponent, SidebarComponent],
+  templateUrl: './rol.component.html',
+  styleUrl: './rol.component.css'
 })
-export class MedicosComponent implements OnInit {
+export class RolComponent implements OnInit {
   constructor(
     private OperacionesM: Operaciones,
     public validar: TipoDeTexto,
@@ -35,7 +30,6 @@ export class MedicosComponent implements OnInit {
       );
     });
   }
-  
   ngOnInit(): void {
     this.ListarElementos();
     this.checkLocal();
@@ -45,15 +39,10 @@ export class MedicosComponent implements OnInit {
       this.OperacionesM.Logout();
     }
   }
-  NombrePagina: string = 'Medico';
+  NombrePagina: string = 'Rol';
   TituloFormulario: string = '';
   ParametrosDeBusqueda: Array<string> = [
-    '',
-    'Identificacion',
-    'Nombres Completos',
-    'Apellidos Completos',
-    'Nombres Incompletos',
-    'Apellidos Incompletos',
+    'Descripcion',
     'Estado',
   ];
   ParametrosEstado: any[] = [
@@ -95,7 +84,7 @@ export class MedicosComponent implements OnInit {
     }
     this.GetBusquedaPor('');
     this.OperacionesM.ListarElementos(
-      'Medicos/',
+      'Rol/',
       this.FraccionDatos,
       this.RangoDatos
     )
@@ -115,31 +104,15 @@ export class MedicosComponent implements OnInit {
       tipo = 0;
       this.GetFiltrarElemento(valor, tipo);
     }
-    if (this.itemBusqueda.value === 'Identificacion') {
+    if (this.itemBusqueda.value === 'Descripcion') {
       tipo = 1;
-      this.GetFiltrarElemento(valor, tipo);
-    }
-    if (this.itemBusqueda.value === 'Nombres Completos') {
-      tipo = 2;
-      this.GetFiltrarElemento(valor, tipo);
-    }
-    if (this.itemBusqueda.value === 'Nombres Incompletos') {
-      tipo = 3;
-      this.GetFiltrarElemento(valor, tipo);
-    }
-    if (this.itemBusqueda.value === 'Apellidos Completos') {
-      tipo = 4;
-      this.GetFiltrarElemento(valor, tipo);
-    }
-    if (this.itemBusqueda.value === 'Apellidos Incompletos') {
-      tipo = 5;
       this.GetFiltrarElemento(valor, tipo);
     }
   }
 
   GetFiltrarElemento(valor: string, tipo: number) {
     this.ListaElementos = [];
-    this.OperacionesM.FiltrarElementos('MedicosFiltro/', tipo, valor)
+    this.OperacionesM.FiltrarElementos('RolFiltro/', tipo, valor)
       .pipe(
         map((datos) => {
           this.ListaElementos = datos;
@@ -163,8 +136,6 @@ export class MedicosComponent implements OnInit {
   EncerarComponentes() {
     this.TituloFormulario = '';
     this.resetForm();
-    this.Persona = '';
-    this.Consultorio = '';
   }
 
   ElementoForm!: FormGroup;
@@ -172,55 +143,16 @@ export class MedicosComponent implements OnInit {
     {
       tipo: 'text',
       tipovalue: 'Text',
-      name: 'Especialidad',
-      label: 'Especialidad',
+      name: 'Descripcion',
+      label: 'Descripcion',
+
       longitudMin: 1,
-      longitudMax: 100,
+      longitudMax: 20,
       validators: [
         Validators.required,
-        this.validar.validarLongitudMinMax(1, 100),
+        this.validar.validarLongitudMinMax(1, 20),
         this.validar.VFN_SoloLetras(),
       ],
-    },
-    {
-      tipo: 'text',
-      tipovalue: 'Text',
-      name: 'Subespecialidad',
-      label: 'Subespecialidad',
-      longitudMin: 1,
-      longitudMax: 100,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(1, 100),
-        this.validar.VFN_SoloLetras(),
-      ],
-    },
-    {
-      tipo: 'text',
-      tipovalue: 'number',
-      name: 'NumeroCarnet',
-      label: 'Numero de Carnet',
-      longitudMin: 1,
-      longitudMax: 15,
-      validators: [
-        Validators.required,
-        this.validar.validarLongitudMinMax(1, 15),
-        this.validar.VFN_SoloNumeros(),
-      ],
-    },
-    {
-      tipo: 'text',
-      tipovalue: '',
-      name: 'persona_id',
-      label: 'Persona id',
-      validators: [Validators.required, this.validar.VFN_SoloNumeros()],
-    },
-    {
-      tipo: 'text',
-      tipovalue: '',
-      name: 'consultorio_id',
-      label: 'Consultorio id',
-      validators: [Validators.required, this.validar.VFN_SoloNumeros()],
     },
     {
       tipo: 'checkbox',
@@ -232,32 +164,25 @@ export class MedicosComponent implements OnInit {
   ];
   resetForm() {
     this.ElementoForm.reset({
-      Especialidad: '',
-      Subespecialidad: '',
-      NumeroCarnet: '',
-      persona_id: '',
-      consultorio_id: '',
+      Descripcion: '',
       Estado: false,
     });
     this.ElementoForm.removeControl('id');
   }
-
   GuardarElemento(elemento: any) {
     elemento.id = elemento.id == undefined ? 0 : Number(elemento.id);
     elemento.Estado = elemento.Estado == true ? 'Activo' : 'Inactivo';
-    this.OperacionesM.GuardarElemento('Medicos', elemento)
+    this.OperacionesM.GuardarElemento('Rol', elemento)
       .pipe(
         map((x) => {
           if (x == '200' || x == '201') {
             if (elemento.id != 0) {
               this.ListarElementos();
               this.EncerarComponentes();
-              // this.TextoFiltro.patchValue('');
               this.alerta.RegistroActualizado();
             } else {
               this.ListarElementos();
               this.EncerarComponentes();
-              // this.TextoFiltro.patchValue('');
               this.alerta.RegistroAgregado();
             }
           }
@@ -269,59 +194,11 @@ export class MedicosComponent implements OnInit {
     this.ElementoForm.addControl('id', new FormControl());
     this.ElementoForm.reset({
       id: datos.id,
-      Especialidad: datos.Especialidad,
-      Subespecialidad: datos.Subespecialidad,
-      NumeroCarnet: datos.NumeroCarnet,
-      persona_id: datos.persona_id,
-      consultorio_id: datos.consultorio_id,
+      Descripcion: datos.Descripcion,
       Estado: datos.Estado == 'Activo' ? true : false,
     });
-    
-    this.Persona = datos.Nombres + ' ' + datos.Apellidos;
-    this.Consultorio = datos.Nombre;
     this.AgregarEditarElemento(tipo);
   }
-  // ****************************************** EXTRAS *****************************************************************
-  BuscarCliente(reciv: any) {
-    let recivido = reciv.target.value.trim();
-    this.Persona = '';
-    this.ElementoForm.patchValue({ persona_id: '' });
-    if (recivido.length > 0) {
-      this.OperacionesM.FiltrarElementos('PersonasFiltro/', 1, recivido)
-        .pipe(
-          map((datos) => {
-            let person = datos[0];
-            if (datos.length != 0) {
-              this.ElementoForm.addControl('persona_id', new FormControl());
-              this.ElementoForm.patchValue({ persona_id: person.id });
-              this.Persona = person.Nombres + ' ' + person.Apellidos;
-            }
-          })
-        )
-        .subscribe();
-    }
-  }
-  Persona: string = '';
-  BuscarConsultorio(reciv: any) {
-    let recivido = reciv.target.value.trim();
-    this.Consultorio = '';
-    this.ElementoForm.patchValue({ consultorio_id: '' });
-    if (recivido.length > 0) {
-      this.OperacionesM.FiltrarElementos('ConsultoriosFiltro/', 6, recivido)
-        .pipe(
-          map((datos) => {
-            let consultorio = datos[0];
-            if (datos.length != 0) {
-              this.ElementoForm.patchValue({ consultorio_id: consultorio.id });
-              this.Consultorio = consultorio.Nombre;
-            }
-          })
-        )
-        .subscribe();
-    }
-  }
-  Consultorio: string = '';
-
   // ****************************************** PAGINACION *****************************************************************
 
   ActualizaEstado(elemento: any) {
@@ -329,7 +206,7 @@ export class MedicosComponent implements OnInit {
       id: elemento.id,
       Estado: elemento.Estado == 'Activo' ? 'Inactivo' : 'Activo',
     };
-    this.OperacionesM.EditarParcialElemento('Medicos', edit)
+    this.OperacionesM.EditarParcialElemento('Rol', edit)
       .pipe(
         map((x) => {
           if (x == '200' || x == '201') {
@@ -344,7 +221,7 @@ export class MedicosComponent implements OnInit {
   EliminarElemento(elemento: any) {
     this.alerta.EliminarRegistro().then((confirmado) => {
       if (confirmado) {
-        this.OperacionesM.EliminarElemento('Medicos/', elemento.id)
+        this.OperacionesM.EliminarElemento('Rol/', elemento.id)
           .pipe(
             map((x) => {
               if (x == '200' || x == '201') {

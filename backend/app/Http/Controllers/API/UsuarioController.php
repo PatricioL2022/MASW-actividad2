@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class UsuarioController
@@ -20,7 +21,25 @@ class UsuarioController
     }
     public function ListarUsuariosPag($codigo, $rango)
     {
-        $q = Usuario::where('Estado', 'Activo')
+        $q = Usuario::join('persona', 'usuario.persona_id', '=', 'persona.id')
+            ->join('rol', 'usuario.rol_id', '=', 'rol.id')
+            ->where('usuario.Estado', 'Activo')
+            ->select(
+                'usuario.id',
+                'usuario.Usuario',
+                'usuario.Password',
+                'persona.Identificacion',
+                'persona.Nombres',
+                'persona.Apellidos',
+                'persona.Genero',
+                'persona.Telefono',
+                'persona.Correo',
+                'persona.FechaNacimiento',
+                'rol.Descripcion',
+                'usuario.rol_id',
+                'usuario.persona_id',
+                'usuario.Estado',
+            )
             ->orderBy('id', 'desc')
             ->skip($codigo)
             ->take($rango == 0 ? 1000 : $rango)
@@ -34,32 +53,53 @@ class UsuarioController
     }
     public function Filtrar($tipo, $valor)
     {
-        $query = Usuario::query();
+        $query = usuario::query();
 
-        if ($tipo == 0) {
-            $query->where('Estado', $valor);
-        } elseif ($tipo == 1) {
-            $query->where('Identificacion', strtoupper($valor));
-        } elseif ($tipo == 2) {
-            $query->where('Nombres', strtoupper($valor));
-        } elseif ($tipo == 3) {
-            $query->where('Nombres', 'like', '%' . strtoupper($valor) . '%');
-        } elseif ($tipo == 4) {
-            $query->where('Apellidos', strtoupper($valor));
-        } elseif ($tipo == 5) {
-            $query->where('Apellidos', 'like', '%' . strtoupper($valor) . '%');
-        } else {
-            $data = [
-                'data' => [],
-                'exito' => 400,
-                'mensaje' => 'Tipo no válido'
-            ];
-            return response()->json($data);
+        switch ($tipo) {
+
+            case 0:
+                $query->join('persona', 'usuario.persona_id', '=', 'persona.id')
+                    ->join('rol', 'usuario.rol_id', '=', 'rol.id')
+                    ->where('usuario.Estado', $valor);
+                break;
+            case 1:
+                $query->join('persona', 'usuario.persona_id', '=', 'persona.id')
+                    ->join('rol', 'usuario.rol_id', '=', 'rol.id')
+                    ->where('usuario.Usuario', strtoupper($valor));
+                break;
+
+            case 2:
+                $query->join('persona', 'usuario.persona_id', '=', 'persona.id')
+                    ->join('rol', 'usuario.rol_id', '=', 'rol.id')
+                    ->where('persona.Nombres', 'like', '%' . strtoupper($valor) . '%');
+                break;
+
+            default:
+
+                return response()->json([
+                    'data' => [],
+                    'exito' => 400,
+                    'mensaje' => 'Tipo no válido'
+                ]);
         }
 
-        $result = $query->orderBy('id')
-            ->take(100)
-            ->get();
+        $result = $query->select(
+            'usuario.id',
+            'usuario.Usuario',
+            'usuario.Password',
+            'persona.Identificacion',
+            'persona.Nombres',
+            'persona.Apellidos',
+            'persona.Genero',
+            'persona.Telefono',
+            'persona.Correo',
+            'persona.FechaNacimiento',
+            'rol.Descripcion',
+            'usuario.rol_id',
+            'usuario.persona_id',
+            'usuario.Estado',
+        )
+            ->orderBy('usuario.id', 'desc')->take(100)->get();
 
         $data = [
             'data' => $result,
@@ -88,64 +128,69 @@ class UsuarioController
         return response()->json($data);
     }
     public function Agregar(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'Usuario' => 'required|string|max:10|unique:usuario,Usuario',
-            'Password' => 'required|string|max:20',
-            'rol_id' => 'required|number',
-            'Estado' => 'required|in:Activo,Inactivo',
-        ]);
+{
+    $validator = Validator::make($request->all(), [
+        'Usuario' => 'required|string|max:10|unique:usuarios,Usuario', // Verifica que el nombre de la tabla es correcto
+        'Password' => 'required|string|max:20',
+        'rol_id' => 'required|integer',
+        'persona_id' => 'required|integer',
+        'Estado' => 'required|in:Activo,Inactivo',
+    ]);
 
+    if ($validator->fails()) {
+        $data = [
+            'data' => $validator->errors(),
+            'mensaje' => 'Error en la validación de los datos',
+            'exito' => 400
+        ];
+        return response()->json($data, 400);
+    }
 
-        if ($validator->fails()) {
-            $data = [
-                'data' =>  $validator->errors(),
-                'mensaje' => 'Error en la validación de los datos',
-                'exito' => 400
-            ];
-            return response()->json($data);
-        }
+    // $hashedPassword = Hash::make($request->Password);
 
+    try {
         $Usuario = Usuario::create([
             'Usuario' => $request->Usuario,
             'Password' => $request->Password,
             'rol_id' => $request->rol_id,
+            'persona_id' => $request->persona_id,
             'Estado' => $request->Estado,
         ]);
 
-        if (!$Usuario) {
-            $data = [
-                'data' =>  '',
-                'mensaje' => 'Error al crear el Usuario',
-                'exito' => 500
-            ];
-            return response()->json($data);
-        }
-
         $data = [
-            'data' =>  $Usuario,
-            'mensaje' => '',
+            'data' => $Usuario,
+            'mensaje' => 'Usuario creado con éxito',
             'exito' => 201
         ];
-
-        return response()->json($data);
+        return response()->json($data, 201);
+    } catch (\Exception $e) {
+        // Manejar cualquier error que ocurra durante la creación del usuario
+        $data = [
+            'data' => '',
+            'mensaje' => 'Error al crear el Usuario: ' . $e->getMessage(),
+            'exito' => 500
+        ];
+        return response()->json($data, 500);
     }
+}
+
+
     public function Editar(Request $request)
     {
-        $Usuario = Usuario::find($request->id);
+        $UsuarioReq = Usuario::find($request->id);
 
-        if (!$Usuario) {
+        if (!$UsuarioReq) {
             $data = [
                 'mensaje' => 'Usuario no encontrado',
                 'exito' => 404
             ];
             return response()->json($data);
         }
-
         $validator = Validator::make($request->all(), [
-            'Usuario' => 'required|string|max:10|unique:Usuario',
-            'Password' => 'required|string|max:20',
-            'rol_id' => 'required|number',
+            'Usuario' => 'required|string',
+            'Password' => 'required|string',
+            'rol_id' => 'required',
+            'persona_id' => 'required',
             'Estado' => 'required|in:Activo,Inactivo',
         ]);
 
@@ -157,16 +202,18 @@ class UsuarioController
             ];
             return response()->json($data);
         }
+        // $hashedPassword = Hash::make($request->Password);
 
-        $Usuario->Usuario = $request->Usuario;
-        $Usuario->Password = $request->Password;
-        $Usuario->rol_id = $request->rol_id;
-        $Usuario->Estado = $request->Estado;
+        $UsuarioReq->Usuario = $request->Usuario;
+        $UsuarioReq->Password = $request->Password;
+        $UsuarioReq->rol_id = $request->rol_id;
+        $UsuarioReq->persona_id = $request->persona_id;
+        $UsuarioReq->Estado = $request->Estado;
 
-        $Usuario->save();
+        $UsuarioReq->save();
 
         $data = [
-            'data' =>  $Usuario,
+            'data' =>  $UsuarioReq,
             'mensaje' => 'Usuario actualizado',
             'exito' => 200
         ];
@@ -190,6 +237,7 @@ class UsuarioController
             'Usuario' => 'string|max:10|unique:usuario,Usuario',
             'Password' => 'string|max:20',
             'rol_id' => 'number',
+            'persona_id' => 'number',
             'Estado' => 'in:Activo,Inactivo',
         ]);
 
@@ -210,6 +258,9 @@ class UsuarioController
         }
         if ($request->has('rol_id')) {
             $Usuario->rol_id = $request->rol_id;
+        }
+        if ($request->has('persona_id')) {
+            $Usuario->persona_id = $request->persona_id;
         }
         $Usuario->save();
 
@@ -255,6 +306,4 @@ class UsuarioController
 
         return response()->json($data);
     }
-
-
 }

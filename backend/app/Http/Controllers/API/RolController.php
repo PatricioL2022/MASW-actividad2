@@ -41,7 +41,10 @@ class RolController extends Controller
             $query->where('Estado', $valor);
         } elseif ($tipo == 1) {
             $query->where('Descripcion', strtoupper($valor));
-        } else {
+        } elseif ($tipo == 2) {
+            $query->where('Descripcion', 'like', '%' . strtoupper($valor) . '%')
+            ->where('Estado','Activo');
+        }else {
             $data = [
                 'data' => [],
                 'exito' => 400,
