@@ -1,0 +1,27 @@
+<h4 class="NombrePage">Agenda Cita</h4>
+<section class="content">
+    <div class="container">
+      
+            <div class="card card-default pl-2" *ngFor="let item of medicos">
+                <div class="row">
+                    <div class="col-md-3 p-2">
+                        <img src="{{item.foto}}" width="100" height="150" class="img-thumbnail">
+
+                    </div>
+                    <div class="col-md-6 p-2 pt-4">
+                        <h2>{{item.nombre}}</h2>
+                        <h4>{{item.especialidad }}</h4>
+                    </div>
+                    <div class="col-md-3 pt-5">
+                       <a [routerLink]="['/cita/agenda/paciente',item.id,item.nombre]" type="button" class="btn btn-primary">QUIERO AGENDAR</a>
+                    </div>
+                </div>
+            </div>   
+            <div *ngIf="medicos.length == 0" class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Aviso!</strong> Nada para mostrar.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+    </div>
+</section>

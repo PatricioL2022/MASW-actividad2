@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Models\Agenda;
 use App\Models\agendadetalle;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Throwable;
@@ -153,5 +154,28 @@ class AgendaController
                 'Estado' => "Disponible",
             ]);
         }
+    }
+
+    public function obtenHorarioDeAgenda($medico_id,$fecha){
+        $data = DB::table('agendadetalle')
+            ->join('agenda', 'agendadetalle.agenda_id', '=', 'agenda.id')
+            ->join('horarioatenciondetalle', 'agenda.horarioatenciondetalle_id', '=', 'horarioatenciondetalle.id')
+            ->select(
+                DB::raw(
+                    'agendadetalle.Id,
+                           time_format(agendadetalle.HoraInicio,"%H:%i") HoraInicio,
+                           time_format(agendadetalle.HoraFin,"%H:%i") HoraFin,
+                           agendadetalle.Estado
+                           ')
+                 )
+            ->where('agenda.Fecha', '=', $fecha)
+            ->where('horarioatenciondetalle.medico_id', '=', $medico_id)
+            ->get();
+        $data = [
+            'data' => $data,
+            'mensaje' => 'Exito',
+            'exito' => 200
+        ];
+        return response()->json($data, 200);
     }
 }

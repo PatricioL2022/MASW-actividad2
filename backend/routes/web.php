@@ -10,9 +10,9 @@ Route::get('/sa', function () {
    return strtotime("2024/07/15");
 });
 
-Route::prefix('users')->controller(UserController::class)->group(function () {
+/**Route::prefix('users')->controller(UserController::class)->group(function () {
     Route::get('/{user}/detalle','detail')->name('user_detail');
-});
+});*/
 
 
 

@@ -2,22 +2,21 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Person;
 
 
-class PersonController extends Controller
+
+class PersonController
 {
-    public function get(){
-        try { 
+    /**public function get(){
+        try {
             $data = Person::get();
             return response()->json($data, 200);
         } catch (\Throwable $th) {
             return response()->json([ 'error' => $th->getMessage()], 500);
         }
     }
-  
+
     public function create(Request $request){
         try {
             $data['name'] = $request['name'];
@@ -31,7 +30,7 @@ class PersonController extends Controller
     }
 
     public function getById($id){
-        try { 
+        try {
             $data = Person::find($id);
             return response()->json($data, 200);
         } catch (\Throwable $th) {
@@ -40,7 +39,7 @@ class PersonController extends Controller
     }
 
     public function update(Request $request,$id){
-        try { 
+        try {
             $data['name'] = $request['name'];
             $data['address'] = $request['address'];
             $data['phone'] = $request['phone'];
@@ -51,14 +50,14 @@ class PersonController extends Controller
             return response()->json([ 'error' => $th->getMessage()], 500);
         }
     }
-  
+
     public function delete($id){
-        try {       
-            $res = Person::find($id)->delete(); 
+        try {
+            $res = Person::find($id)->delete();
             return response()->json([ "deleted" => $res ], 200);
         } catch (\Throwable $th) {
             return response()->json([ 'error' => $th->getMessage()], 500);
         }
-    }
-      
+    }*/
+
 }

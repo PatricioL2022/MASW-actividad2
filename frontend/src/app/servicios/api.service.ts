@@ -51,12 +51,32 @@ export class ApiService {
     );
   }
   GetHorarioAtencionDetallePorMedico(medico_id:number): Observable<any> {
-   
     let direccion = this.url + 'HorarioAtencionDetalle/'+medico_id;
     return this.http.get(direccion);
   }
   PostAgenda(elemento:any): Observable<any> {
     let direccion = this.url + 'Agenda';
+    let jsonElemento = JSON.stringify(elemento);
+    return this.http.post<any>(direccion, elemento, { headers: { 'Content-Type': 'application/json' } }).pipe(
+      map((data) => {
+        return data;
+      }),
+      catchError((error) => {
+        this.alerta.ErrorAlRecuperarElementosError('Error al Conectar con el servidor', error);
+        throw error;
+      })
+    );
+  }
+  GetMedicosEspecialidad(): Observable<any> {
+    let direccion = this.url + 'Medicos/Especialidad';
+    return this.http.get(direccion);
+  }
+  GetAgendaHorarioPorMedico(medico_id:any,fecha:any): Observable<any> {
+    let direccion = this.url + 'Agenda/Horarios/'+medico_id+'/'+fecha;
+    return this.http.get(direccion);
+  }
+  PostCita(elemento:any): Observable<any> {
+    let direccion = this.url + 'Cita';
     let jsonElemento = JSON.stringify(elemento);
     return this.http.post<any>(direccion, elemento, { headers: { 'Content-Type': 'application/json' } }).pipe(
       map((data) => {

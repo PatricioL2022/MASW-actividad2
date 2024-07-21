@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Models\Medico;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class MedicoController
@@ -205,6 +206,22 @@ class MedicoController
             'status' => 200
         ];
 
+        return response()->json($data, 200);
+    }
+
+    public function ListarMedicosConEspecialidad()
+    {
+        $data = DB::table('medico')
+            ->join('persona', 'medico.persona_id', '=', 'persona.id')
+            ->select('persona.Nombres','persona.Apellidos','medico.id',
+                'medico.Especialidad','persona.Titulo','persona.Foto')
+            ->where('persona.Estado', '=', 'Activo')
+            ->get();
+        $data = [
+            'data' => $data,
+            'mensaje' => 'Exito',
+            'exito' => 200
+        ];
         return response()->json($data, 200);
     }
 }

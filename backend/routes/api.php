@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AgendaController;
+use App\Http\Controllers\API\CitaController;
 use App\Http\Controllers\API\HorarioatencionController;
 use App\Http\Controllers\API\HorarioatenciondetalleController;
 use Illuminate\Http\Request;
@@ -34,6 +35,7 @@ Route::patch('/Personas/{id}', [PersonaController::class, 'EditarParcial']);
 Route::delete('/Personas/{id}',[PersonaController::class, 'Eliminar']);
 
 Route::get('/Medicos', [MedicoController::class, 'ListarMedicos']);
+Route::get('/Medicos/Especialidad', [MedicoController::class, 'ListarMedicosConEspecialidad']);
 Route::get('/Medicos/{id}', [MedicoController::class, 'BuscarId']);
 Route::post('/Medicos', [MedicoController::class, 'Agregar']);
 Route::put('/Medicos/{id}', [MedicoController::class, 'Editar']);
@@ -56,3 +58,7 @@ Route::delete('/Consultorio/{id}',[ConsultorioController::class, 'Eliminar']);
 
 Route::get('/HorarioAtencionDetalle/{medico_id}', [HorarioatencionDetalleController::class, 'detalles']);
 Route::post('/Agenda', [AgendaController::class, 'Agregar']);
+Route::get('/Agenda/Medicos', [AgendaController::class, 'obtenMedicos']);
+Route::get('/Agenda/Horarios/{medico_id}/{fecha}', [AgendaController::class, 'obtenHorarioDeAgenda']);
+
+Route::post('/Cita', [CitaController::class, 'Agregar']);

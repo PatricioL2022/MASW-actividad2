@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         Persona::factory()->count(50)->create();
-        Consultorio::factory()->count(5)->create();
+        Consultorio::factory()->count(1)->create();
         Medico::factory()->count(10)->create();
         Paciente::factory()->count(25)->create();
 
